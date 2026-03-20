@@ -1,0 +1,1159 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dövlət Qulluqçusu Maaş Kalkulatoru · 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#090f1a;--surface:#111827;--surface2:#192133;--surface3:#1f2a40;
+    --border:#243048;--border2:#2e3d58;
+    --accent:#d4aa6a;--accent-dim:rgba(212,170,106,0.12);
+    --accent2:#6eb5cb;--accent2-dim:rgba(110,181,203,0.1);
+    --text:#eceef4;--text2:#b8bdcc;--muted:#6b7590;
+    --success:#56b38a;--danger:#d97070;--radius:10px;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;min-height:100vh;overflow-x:hidden;}
+  body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 50% at 10% 10%,rgba(212,170,106,0.04) 0%,transparent 60%),radial-gradient(ellipse 60% 60% at 90% 80%,rgba(110,181,203,0.04) 0%,transparent 60%);pointer-events:none;z-index:0;}
+  body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(255,255,255,0.016) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.016) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;z-index:0;}
+
+  .topbar{position:fixed;top:0;left:0;right:0;height:50px;background:rgba(9,15,26,0.9);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 28px;z-index:100;}
+  .topbar-left{display:flex;align-items:center;gap:10px;}
+  .topbar-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px rgba(212,170,106,0.7);}
+  .topbar-title{font-family:'DM Mono',monospace;font-size:10.5px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;}
+  .topbar-right{display:flex;align-items:center;gap:10px;}
+  .topbar-author-label{font-family:'DM Mono',monospace;font-size:9.5px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;}
+  .topbar-author-name{font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;color:var(--accent);letter-spacing:0.3px;padding:4px 14px;background:var(--accent-dim);border:1px solid rgba(212,170,106,0.22);border-radius:20px;}
+
+  .container{max-width:900px;margin:0 auto;padding:80px 24px 80px;position:relative;z-index:1;}
+
+  header{margin-bottom:40px;padding-bottom:30px;border-bottom:1px solid var(--border);}
+  .badge-row{display:flex;align-items:center;gap:8px;margin-bottom:16px;flex-wrap:wrap;}
+  .badge{display:inline-flex;align-items:center;gap:6px;background:var(--accent-dim);border:1px solid rgba(212,170,106,0.22);color:var(--accent);font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;padding:5px 12px;border-radius:3px;text-transform:uppercase;}
+  .badge-dot{width:5px;height:5px;border-radius:50%;background:var(--accent);box-shadow:0 0 5px rgba(212,170,106,0.6);}
+  .badge-blue{background:var(--accent2-dim);border-color:rgba(110,181,203,0.2);color:var(--accent2);}
+  h1{font-family:'Cormorant Garamond',serif;font-size:clamp(30px,5.5vw,50px);font-weight:700;line-height:1.1;color:var(--text);margin-bottom:10px;}
+  h1 em{font-style:italic;color:var(--accent);}
+  .subtitle{color:var(--muted);font-size:12px;letter-spacing:0.8px;font-family:'DM Mono',monospace;line-height:1.9;}
+  .stats-strip{display:flex;margin-top:24px;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;background:var(--surface);}
+  .stat-item{flex:1;padding:13px 14px;border-right:1px solid var(--border);text-align:center;transition:background .2s;}
+  .stat-item:last-child{border-right:none;}
+  .stat-item:hover{background:var(--surface2);}
+  .stat-value{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:700;color:var(--accent);line-height:1;margin-bottom:4px;}
+  .stat-label{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:1px;color:var(--muted);text-transform:uppercase;}
+
+  /* TABS */
+  .tabs{display:flex;gap:0;margin-bottom:16px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}
+  .tab-btn{flex:1;padding:14px 20px;background:transparent;border:none;color:var(--muted);font-family:'DM Mono',monospace;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:all .2s;border-right:1px solid var(--border);}
+  .tab-btn:last-child{border-right:none;}
+  .tab-btn.active{background:var(--accent-dim);color:var(--accent);}
+  .tab-btn:hover:not(.active){background:var(--surface2);color:var(--text2);}
+
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:22px 24px;margin-bottom:14px;position:relative;overflow:hidden;transition:border-color .2s;}
+  .card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(212,170,106,0.35),transparent);opacity:0;transition:opacity .3s;}
+  .card:focus-within::before{opacity:1;}
+  .card:focus-within{border-color:var(--border2);}
+  .step-label{display:flex;align-items:center;gap:12px;margin-bottom:18px;}
+  .step-num{width:24px;height:24px;border-radius:50%;background:var(--accent-dim);border:1px solid rgba(212,170,106,0.28);color:var(--accent);font-family:'DM Mono',monospace;font-size:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-weight:500;}
+  .step-title{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--accent);text-transform:uppercase;}
+  .step-line{flex:1;height:1px;background:var(--border);}
+
+  /* SEARCH */
+  .search-wrapper{position:relative;margin-bottom:12px;}
+  .search-input{background:var(--surface2);border:1px solid var(--border);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;padding:12px 40px 12px 14px;border-radius:8px;outline:none;transition:border-color .2s,background .2s;width:100%;}
+  .search-input:focus{border-color:var(--accent);background:var(--surface3);}
+  .search-input::placeholder{color:var(--muted);}
+  .search-icon{position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:16px;pointer-events:none;}
+  .search-clear{position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:18px;cursor:pointer;display:none;background:none;border:none;line-height:1;padding:0;}
+  .search-clear:hover{color:var(--accent);}
+
+  .results-list{max-height:320px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;background:var(--surface2);display:none;}
+  .results-list.show{display:block;}
+  .result-item{padding:11px 14px;cursor:pointer;border-bottom:1px solid var(--border);transition:background .15s;}
+  .result-item:last-child{border-bottom:none;}
+  .result-item:hover{background:var(--surface3);}
+  .result-item.selected{background:var(--accent-dim);border-left:3px solid var(--accent);}
+  .result-item-name{font-size:13px;color:var(--text);margin-bottom:3px;line-height:1.4;}
+  .result-item-name mark{background:rgba(212,170,106,0.25);color:var(--accent);border-radius:2px;padding:0 2px;}
+  .result-item-meta{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);display:flex;gap:10px;flex-wrap:wrap;}
+  .result-item-meta span{padding:2px 7px;background:rgba(255,255,255,0.04);border-radius:3px;}
+  .no-results{padding:20px;text-align:center;font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);}
+
+  .selected-badge{display:none;align-items:center;gap:10px;padding:10px 14px;background:rgba(212,170,106,0.08);border:1px solid rgba(212,170,106,0.2);border-radius:8px;margin-top:10px;}
+  .selected-badge.show{display:flex;}
+  .selected-badge-text{flex:1;font-size:13px;color:var(--text2);line-height:1.4;}
+  .selected-badge-sev{font-family:'DM Mono',monospace;font-size:11px;color:var(--accent);white-space:nowrap;}
+  .selected-badge-clear{background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;padding:0;line-height:1;}
+  .selected-badge-clear:hover{color:var(--danger);}
+
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  @media(max-width:580px){.form-grid{grid-template-columns:1fr;}.card{padding:18px 16px;}.topbar-author-label{display:none;}.stats-strip{flex-wrap:wrap;}.stat-item{flex:1 1 33%;border-bottom:1px solid var(--border);}.tab-btn{font-size:10px;padding:12px 10px;letter-spacing:1px;}}
+  .field{display:flex;flex-direction:column;gap:7px;}
+  .field.full{grid-column:1/-1;}
+  label{font-size:9.5px;font-family:'DM Mono',monospace;color:var(--muted);letter-spacing:1.2px;text-transform:uppercase;}
+  .select-wrapper{position:relative;}
+  select{background:var(--surface2);border:1px solid var(--border);color:var(--text);font-family:'DM Sans',sans-serif;font-size:13.5px;padding:11px 36px 11px 13px;border-radius:7px;outline:none;transition:border-color .2s,background .2s;width:100%;appearance:none;-webkit-appearance:none;cursor:pointer;}
+  select:focus{border-color:var(--accent);background:var(--surface3);}
+  select:hover{border-color:var(--border2);}
+  .select-wrapper::after{content:'⌄';position:absolute;right:12px;top:50%;transform:translateY(-52%);color:var(--accent);pointer-events:none;font-size:16px;line-height:1;}
+
+  .pill-row{display:grid;grid-template-columns:repeat(7,1fr);gap:7px;margin-bottom:18px;}
+  .pill-btn{background:var(--surface2);border:1px solid var(--border);color:var(--muted);font-family:'DM Mono',monospace;font-size:12px;padding:11px 4px;border-radius:7px;cursor:pointer;text-align:center;transition:all .15s;font-weight:500;}
+  .pill-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-dim);}
+  .pill-btn.active{background:var(--accent);border-color:var(--accent);color:#090f1a;box-shadow:0 0 18px rgba(212,170,106,0.28);}
+  .staj-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  @media(max-width:560px){.staj-grid{grid-template-columns:1fr;}}
+  .staj-box{background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:12px 14px;}
+  .staj-box-title{font-family:'DM Mono',monospace;font-size:8.5px;letter-spacing:1.5px;color:var(--accent);text-transform:uppercase;margin-bottom:8px;}
+  .staj-box-rows{font-size:11px;font-family:'DM Mono',monospace;color:var(--muted);line-height:2;}
+
+  .calc-btn{background:linear-gradient(135deg,#d4aa6a,#c0944a);color:#090f1a;border:none;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:2.5px;text-transform:uppercase;padding:16px 32px;border-radius:8px;cursor:pointer;width:100%;margin-top:4px;transition:all .2s;font-weight:500;position:relative;overflow:hidden;}
+  .calc-btn::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,0.15),transparent);opacity:0;transition:opacity .2s;}
+  .calc-btn:hover::after{opacity:1;}
+  .calc-btn:hover{transform:translateY(-2px);box-shadow:0 8px 26px rgba(212,170,106,0.28);}
+  .calc-btn:active{transform:translateY(0);}
+
+  .result-card{display:none;background:var(--surface);border:1px solid rgba(212,170,106,0.2);border-radius:var(--radius);padding:28px 26px;margin-top:14px;position:relative;overflow:hidden;animation:slideUp .38s cubic-bezier(0.16,1,0.3,1);}
+  @keyframes slideUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+  .result-card.show{display:block;}
+  .result-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent2),var(--accent));}
+  .result-header{display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:24px;}
+  .result-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:5px;}
+  .result-amount{font-family:'Cormorant Garamond',serif;font-size:clamp(44px,9vw,66px);font-weight:700;color:var(--accent);line-height:1;}
+  .result-amount sup{font-size:26px;font-weight:400;vertical-align:super;color:var(--muted);margin-left:4px;}
+  .result-meta{text-align:right;}
+  .meta-pill-badge{display:inline-flex;align-items:center;gap:6px;background:var(--accent2-dim);border:1px solid rgba(110,181,203,0.2);color:var(--accent2);font-family:'DM Mono',monospace;font-size:10px;padding:6px 12px;border-radius:5px;margin-bottom:7px;}
+  .meta-seviyye{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);line-height:1.8;}
+  .breakdown{border-top:1px solid var(--border);padding-top:18px;display:flex;flex-direction:column;gap:7px;}
+  .brow{display:flex;justify-content:space-between;align-items:center;padding:9px 14px;border-radius:7px;font-size:13px;transition:background .15s;}
+  .brow:hover{background:rgba(255,255,255,0.02);}
+  .brow-label{color:var(--text2);}
+  .brow-val{font-family:'DM Mono',monospace;font-weight:500;color:var(--text);font-size:13px;}
+  .brow.hl{background:var(--accent-dim);border:1px solid rgba(212,170,106,0.1);}
+  .brow.hl .brow-label,.brow.hl .brow-val{color:var(--accent);}
+  .brow.total-row{background:rgba(212,170,106,0.1);border:1px solid rgba(212,170,106,0.2);margin-top:6px;}
+  .brow.total-row .brow-label,.brow.total-row .brow-val{color:var(--accent);font-size:15px;font-weight:500;}
+
+  .info-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px;}
+  @media(max-width:560px){.info-row{grid-template-columns:1fr;}}
+  .info-box{border-radius:var(--radius);padding:16px 18px;}
+  .info-box.danger{background:rgba(217,112,112,0.05);border:1px solid rgba(217,112,112,0.14);}
+  .info-box.success{background:rgba(86,179,138,0.05);border:1px solid rgba(86,179,138,0.14);}
+  .info-box-title{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px;}
+  .info-box.danger .info-box-title{color:var(--danger);}
+  .info-box.success .info-box-title{color:var(--success);}
+  .tag-list{display:flex;flex-wrap:wrap;gap:6px;}
+  .tag{font-size:11px;font-family:'DM Mono',monospace;padding:4px 10px;border-radius:4px;}
+  .tag-d{background:rgba(217,112,112,0.08);border:1px solid rgba(217,112,112,0.14);color:#b87070;text-decoration:line-through;text-decoration-color:rgba(217,112,112,0.35);}
+  .tag-s{background:rgba(86,179,138,0.08);border:1px solid rgba(86,179,138,0.14);color:#70b098;}
+
+  footer{text-align:center;margin-top:50px;padding-top:22px;border-top:1px solid var(--border);display:flex;flex-direction:column;align-items:center;gap:10px;}
+  .footer-text{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:0.8px;opacity:0.55;}
+  .footer-author{display:flex;align-items:center;gap:12px;}
+  .footer-author-line{width:28px;height:1px;background:var(--accent);opacity:0.35;}
+  .footer-author-text{font-family:'Cormorant Garamond',serif;font-size:15px;color:var(--accent);opacity:0.65;letter-spacing:0.5px;}
+
+  /* scrollbar */
+  .results-list::-webkit-scrollbar{width:6px;}
+  .results-list::-webkit-scrollbar-track{background:var(--surface2);}
+  .results-list::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <div class="topbar-dot"></div>
+    <span class="topbar-title">Maaş Kalkulatoru · 2026</span>
+  </div>
+  <div class="topbar-right">
+    <span class="topbar-author-label">Tərtib etdi</span>
+    <span class="topbar-author-name">Məmməd Quliyev</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <header>
+    <div class="badge-row">
+      <div class="badge"><div class="badge-dot"></div>Prezident Fərmanı</div>
+      <div class="badge badge-blue">19 Mart 2026</div>
+      <div class="badge badge-blue">№ 71965</div>
+    </div>
+    <h1>Dövlət Qulluqçusu<br><em>Maaş Kalkulatoru</em></h1>
+    <p class="subtitle">
+      Yanvar 2026-dan tətbiq edilən yeni əmək haqqı sistemi əsasında<br>
+      Ödəniş səviyyəsi · Pill · İxtisas dərəcəsi
+    </p>
+    <div class="stats-strip">
+      <div class="stat-item"><div class="stat-value">1.170 ₼</div><div class="stat-label">İnzibati min.</div></div>
+      <div class="stat-item"><div class="stat-value">760 ₼</div><div class="stat-label">Yardımçı min.</div></div>
+      <div class="stat-item"><div class="stat-value">35</div><div class="stat-label">İnzibati səv.</div></div>
+      <div class="stat-item"><div class="stat-value">17</div><div class="stat-label">Yardımçı səv.</div></div>
+      <div class="stat-item"><div class="stat-value">7</div><div class="stat-label">Pill</div></div>
+    </div>
+  </header>
+
+  <!-- MODE TABS -->
+  <div class="tabs">
+    <button class="tab-btn active" id="tab-search" onclick="switchTab('search')">🔍 Vəzifə axtar</button>
+    <button class="tab-btn" id="tab-manual" onclick="switchTab('manual')">☰ Əl ilə seçim</button>
+  </div>
+
+  <!-- SEARCH MODE -->
+  <div id="mode-search">
+    <div class="card">
+      <div class="step-label">
+        <div class="step-num">1</div>
+        <div class="step-title">Vəzifənizi axtarın</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="search-wrapper">
+        <input class="search-input" id="search-input" type="text" placeholder="Vəzifə adını yazın… (məs: şöbə müdiri, məsləhətçi, mütəxəssis)" oninput="onSearch(this.value)" autocomplete="off">
+        <span class="search-icon" id="search-icon">⌕</span>
+        <button class="search-clear" id="search-clear" onclick="clearSearch()">×</button>
+      </div>
+      <div class="results-list" id="results-list"></div>
+      <div class="selected-badge" id="selected-badge">
+        <div class="selected-badge-text" id="selected-badge-text"></div>
+        <div class="selected-badge-sev" id="selected-badge-sev"></div>
+        <button class="selected-badge-clear" onclick="clearSelection()">×</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MANUAL MODE -->
+  <div id="mode-manual" style="display:none;">
+    <div class="card">
+      <div class="step-label">
+        <div class="step-num">1</div>
+        <div class="step-title">Vəzifə növü və orqan</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="form-grid">
+        <div class="field">
+          <label>Vəzifə növü</label>
+          <div class="select-wrapper">
+            <select id="vazife-nov" onchange="onVazifeNovChange()">
+              <option value="">Seçin…</option>
+              <option value="inzibati">İnzibati vəzifə</option>
+              <option value="yardimci">Yardımçı vəzifə</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label>Orqan / Qurum növü</label>
+          <div class="select-wrapper">
+            <select id="orqan" onchange="onOrqanChange()">
+              <option value="">Əvvəlcə vəzifə növünü seçin</option>
+            </select>
+          </div>
+        </div>
+        <div class="field full">
+          <label>Ödəniş səviyyəsi</label>
+          <div class="select-wrapper">
+            <select id="seviyye" onchange="calculate()">
+              <option value="">Əvvəlcə orqanı seçin</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 2: PILL -->
+  <div class="card">
+    <div class="step-label">
+      <div class="step-num">2</div>
+      <div class="step-title">Ödəniş pilləsi (staja görə)</div>
+      <div class="step-line"></div>
+    </div>
+    <div class="pill-row">
+      <button class="pill-btn active" onclick="selectPill(1)" id="pill-1">I</button>
+      <button class="pill-btn" onclick="selectPill(2)" id="pill-2">II</button>
+      <button class="pill-btn" onclick="selectPill(3)" id="pill-3">III</button>
+      <button class="pill-btn" onclick="selectPill(4)" id="pill-4">IV</button>
+      <button class="pill-btn" onclick="selectPill(5)" id="pill-5">V</button>
+      <button class="pill-btn" onclick="selectPill(6)" id="pill-6">VI</button>
+      <button class="pill-btn" onclick="selectPill(7)" id="pill-7">VII</button>
+    </div>
+    <div class="staj-grid">
+      <div class="staj-box">
+        <div class="staj-box-title">İnzibati vəzifələr (maks. 3 pill)</div>
+        <div class="staj-box-rows">I → 1 ilə qədər (baza)<br>II → 1–5 il staj<br>III → 5–15 il staj<br>IV → 15 ildən yuxarı</div>
+      </div>
+      <div class="staj-box">
+        <div class="staj-box-title">Yardımçı vəzifələr (7 pill)</div>
+        <div class="staj-box-rows">I → Baza &nbsp; II → 1–5 il<br>III → 5–10 il &nbsp; IV → 10–15 il<br>V → 15–20 il &nbsp; VI → 20–25 il<br>VII → 25 ildən yuxarı</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 3: İXTİSAS -->
+  <div class="card">
+    <div class="step-label">
+      <div class="step-num">3</div>
+      <div class="step-title">İxtisas dərəcəsi əlavəsi</div>
+      <div class="step-line"></div>
+    </div>
+    <div class="field">
+      <label>İxtisas dərəcəsi</label>
+      <div class="select-wrapper">
+        <select id="ixtisas" onchange="calculate()">
+          <option value="0">Yoxdur — 0 ₼</option>
+          <option value="600">Həqiqi dövlət müşaviri — 600 ₼</option>
+          <option value="550">1-ci dərəcə dövlət müşaviri — 550 ₼</option>
+          <option value="500">2-ci dərəcə dövlət müşaviri — 500 ₼</option>
+          <option value="450">3-cü dərəcə dövlət müşaviri — 450 ₼</option>
+          <option value="400">Dövlət qulluğunun baş müşaviri — 400 ₼</option>
+          <option value="350">Dövlət qulluğunun müşaviri — 350 ₼</option>
+          <option value="300">Dövlət qulluğunun kiçik müşaviri — 300 ₼</option>
+          <option value="275">1-ci dərəcə dövlət qulluqçusu — 275 ₼</option>
+          <option value="250">2-ci dərəcə dövlət qulluqçusu — 250 ₼</option>
+          <option value="225">3-cü dərəcə dövlət qulluqçusu — 225 ₼</option>
+          <option value="200">Kiçik dövlət qulluqçusu — 200 ₼</option>
+          <option value="175">Dövlət qulluğunun baş referenti — 175 ₼</option>
+          <option value="150">Dövlət qulluğunun böyük referenti — 150 ₼</option>
+          <option value="125">Dövlət qulluğunun 1-ci dərəcə referenti — 125 ₼</option>
+          <option value="100">Dövlət qulluğunun 2-ci dərəcə referenti — 100 ₼</option>
+          <option value="75">Dövlət qulluğunun 3-cü dərəcə referenti — 75 ₼</option>
+          <option value="50">Dövlət qulluğunun kiçik referenti — 50 ₼</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <button class="calc-btn" onclick="calculate()">Hesabla</button>
+
+  <!-- RESULT -->
+  <div class="result-card" id="result-card">
+    <div class="result-header">
+      <div>
+        <div class="result-label">Aylıq Ümumi Əməkhaqqı</div>
+        <div class="result-amount" id="total-display">0 <sup>₼</sup></div>
+      </div>
+      <div class="result-meta">
+        <div class="meta-pill-badge" id="pill-badge-el">✦ I pill · baza</div>
+        <div class="meta-seviyye" id="meta-seviyye-el">—</div>
+      </div>
+    </div>
+    <div class="breakdown">
+      <div class="brow"><span class="brow-label">Baza vəzifə maaşı (I pill)</span><span class="brow-val" id="br-baza">—</span></div>
+      <div class="brow hl" id="br-pill-row"><span class="brow-label" id="br-pill-label">Pill əlavəsi</span><span class="brow-val" id="br-pill">—</span></div>
+      <div class="brow hl" id="br-ixtisas-row"><span class="brow-label">İxtisas dərəcəsi əlavəsi</span><span class="brow-val" id="br-ixtisas">—</span></div>
+      <div class="brow total-row"><span class="brow-label">CƏMİ (aylıq)</span><span class="brow-val" id="br-total">—</span></div>
+    </div>
+  </div>
+
+  <div class="info-row">
+    <div class="info-box danger">
+      <div class="info-box-title">❌ Ləğv olunan təminatlar</div>
+      <div class="tag-list">
+        <span class="tag tag-d">Staja görə əlavə</span>
+        <span class="tag tag-d">Hakimiyyət səlahiyyəti əlavəsi</span>
+        <span class="tag tag-d">Misli ilə əlavə</span>
+        <span class="tag tag-d">Mükafat</span>
+      </div>
+    </div>
+    <div class="info-box success">
+      <div class="info-box-title">✅ Maaşa daxil olan elementlər</div>
+      <div class="tag-list">
+        <span class="tag tag-s">Vəzifə maaşı</span>
+        <span class="tag tag-s">İxtisas dərəcəsi əlavəsi</span>
+        <span class="tag tag-s">Əmək şəraiti əlavələri</span>
+        <span class="tag tag-s">Normadan artıq saatlara haqq</span>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-text">AR Prezidentinin 19.03.2026 tarixli Fərmanı · № 71965 · Yanvar 2026-dan tətbiq edilir</div>
+    <div class="footer-author">
+      <div class="footer-author-line"></div>
+      <div class="footer-author-text">Tərtib etdi — Məmməd Quliyev</div>
+      <div class="footer-author-line"></div>
+    </div>
+  </footer>
+</div>
+
+<script>
+// ─────────────────────────────────────────────
+// MAAŞ CƏDVƏLLƏRİ
+// ─────────────────────────────────────────────
+const INZ = {
+  1:[13680,14020,14365,14705,15050,15390,15730],
+  2:[12725,13045,13360,13680,14000,14315,14635],
+  3:[11835,12135,12430,12725,13020,13315,13615],
+  4:[11010,11285,11560,11835,12115,12390,12665],
+  5:[10245,10500,10755,11010,11265,11525,11780],
+  6:[9530,9765,10005,10245,10480,10720,10960],
+  7:[8865,9085,9305,9530,9750,9970,10195],
+  8:[8245,8450,8660,8865,9070,9275,9485],
+  9:[7670,7860,8055,8245,8435,8630,8820],
+  10:[7135,7315,7490,7670,7850,8025,8205],
+  11:[6635,6805,6970,7135,7300,7465,7635],
+  12:[6175,6330,6485,6635,6790,6945,7100],
+  13:[5745,5885,6030,6175,6320,6460,6605],
+  14:[5340,5475,5610,5745,5875,6010,6145],
+  15:[4970,5095,5220,5340,5465,5590,5715],
+  16:[4625,4740,4855,4970,5085,5200,5315],
+  17:[4300,4410,4515,4625,4730,4840,4945],
+  18:[4000,4100,4200,4300,4400,4500,4600],
+  19:[3720,3815,3910,4000,4095,4185,4280],
+  20:[3460,3550,3635,3720,3810,3895,3980],
+  21:[3220,3300,3380,3460,3545,3620,3705],
+  22:[2995,3070,3145,3220,3295,3370,3445],
+  23:[2785,2855,2925,2995,3065,3135,3205],
+  24:[2590,2655,2720,2785,2850,2915,2980],
+  25:[2410,2470,2530,2595,2650,2715,2775],
+  26:[2245,2300,2355,2410,2470,2525,2580],
+  27:[2085,2140,2190,2245,2295,2350,2400],
+  28:[1940,1990,2040,2085,2135,2185,2230],
+  29:[1805,1850,1895,1940,1985,2030,2075],
+  30:[1680,1720,1765,1805,1845,1890,1930],
+  31:[1560,1600,1640,1680,1720,1755,1795],
+  32:[1455,1490,1525,1560,1600,1635,1670],
+  33:[1355,1385,1420,1455,1485,1520,1555],
+  34:[1260,1290,1320,1355,1385,1415,1445],
+  35:[1170,1200,1230,1260,1285,1315,1345],
+};
+const YAR = {
+  1:[1165,1195,1220,1250,1280,1310,1340],
+  2:[1135,1160,1190,1220,1245,1275,1305],
+  3:[1105,1130,1160,1185,1215,1240,1270],
+  4:[1075,1100,1130,1155,1180,1210,1235],
+  5:[1045,1070,1100,1125,1150,1175,1205],
+  6:[1020,1045,1070,1095,1120,1145,1170],
+  7:[990,1015,1040,1065,1090,1115,1140],
+  8:[965,990,1015,1040,1065,1085,1110],
+  9:[940,965,985,1010,1035,1060,1080],
+  10:[915,940,960,985,1010,1030,1055],
+  11:[890,915,935,960,980,1005,1025],
+  12:[870,890,910,935,955,975,1000],
+  13:[845,865,890,910,930,950,970],
+  14:[825,845,865,885,905,925,945],
+  15:[800,820,840,860,880,900,920],
+  16:[780,800,820,840,860,880,900],
+  17:[760,780,800,815,835,855,875],
+};
+
+// ─────────────────────────────────────────────
+// VƏZİFƏ-SƏVİYYƏ VERİLƏNLƏR BAZASI
+// Mənbə: AR Prezidentinin 19.03.2026 Fərmanı
+// ─────────────────────────────────────────────
+const POSITIONS = [
+  // ── İNZİBATİ, səviyyə 1 ──
+  {n:"Prezident Administrasiyasının rəhbəri", t:"inzibati", s:1},
+  // ── 2 ──
+  {n:"Birinci vitse-prezidentin Katibliyinin rəisi", t:"inzibati", s:2},
+  {n:"Prezidentin İşlər müdiri", t:"inzibati", s:2},
+  {n:"Xüsusi Tibb Xidmətinin rəisi", t:"inzibati", s:2},
+  {n:"Təhlükəsizlik Şurasının katibi", t:"inzibati", s:2},
+  {n:"Prezidentin Protokol Xidmətinin rəisi", t:"inzibati", s:2},
+  // ── 3 ──
+  {n:"Prezidentin köməkçisi – Administrasiyada şöbə müdiri", t:"inzibati", s:3},
+  {n:"Prezidentin köməkçisi", t:"inzibati", s:3},
+  // ── 4 ──
+  {n:"Nazirlər Kabinetinin aparatının rəhbəri", t:"inzibati", s:4},
+  {n:"Milli Məclisin aparatının rəhbəri", t:"inzibati", s:4},
+  {n:"Konstitusiya Məhkəməsinin aparatının rəhbəri", t:"inzibati", s:4},
+  {n:"Ali Məhkəmənin aparatının rəhbəri", t:"inzibati", s:4},
+  {n:"Prezident Administrasiyasında şöbə müdiri", t:"inzibati", s:4},
+  {n:"Prezidentin Mətbuat katibi", t:"inzibati", s:4},
+  {n:"Prezidentin xüsusi tapşırıqlar üzrə nümayəndəsi", t:"inzibati", s:4},
+  {n:"Naxçıvanda Prezidentin səlahiyyətli nümayəndəsi", t:"inzibati", s:4},
+  {n:"Prezidentin xüsusi nümayəndəsi", t:"inzibati", s:4},
+  {n:"Prezidentin iqlim məsələləri üzrə nümayəndəsi", t:"inzibati", s:4},
+  {n:"Birinci vitse-prezidentin Katibliyi rəisinin müavini", t:"inzibati", s:4},
+  {n:"Birinci vitse-prezidentin köməkçisi", t:"inzibati", s:4},
+  {n:"Prezidentin İşlər müdirinin birinci müavini", t:"inzibati", s:4},
+  // ── 5 ──
+  {n:"Vitse-prezidentin köməkçisi", t:"inzibati", s:5},
+  {n:"Prezidentin İşlər müdirinin müavini", t:"inzibati", s:5},
+  {n:"Xüsusi Tibb Xidməti rəisinin müavini", t:"inzibati", s:5},
+  {n:"Protokol Xidməti rəisinin müavini", t:"inzibati", s:5},
+  {n:"Təhlükəsizlik Şurası katibinin müavini", t:"inzibati", s:5},
+  {n:"Prezident Administrasiyasında şöbə müdirinin müavini", t:"inzibati", s:5},
+  {n:"Naxçıvanda Prezidentin nümayəndəsinin müavini", t:"inzibati", s:5},
+  {n:"Baş nazirin Katibliyinin rəisi", t:"inzibati", s:5},
+  {n:"Nazirlər Kabineti aparatı rəhbərinin müavini", t:"inzibati", s:5},
+  {n:"Milli Məclis aparatı rəhbərinin müavini", t:"inzibati", s:5},
+  // ── 6 ──
+  {n:"Nazirlər Kabinetinin aparatında şöbə müdiri", t:"inzibati", s:6},
+  {n:"Milli Məclisin aparatında şöbə müdiri", t:"inzibati", s:6},
+  {n:"Konstitusiya Məhkəməsinin aparatında şöbə müdiri", t:"inzibati", s:6},
+  {n:"Ali Məhkəmənin aparatında şöbə müdiri", t:"inzibati", s:6},
+  {n:"Nazirlər Kabineti Mətbuat xidmətinin rəhbəri", t:"inzibati", s:6},
+  {n:"Nazirlər Kabinetinin işlər müdiri", t:"inzibati", s:6},
+  {n:"Milli Məclisin işlər müdiri", t:"inzibati", s:6},
+  {n:"Prezident Administrasiyası rəhbərinin köməkçisi", t:"inzibati", s:6},
+  {n:"Prezidentin İşlər İdarəsində şöbə müdiri", t:"inzibati", s:6},
+  {n:"Naxçıvan Ali Məclisinin aparatının rəhbəri", t:"inzibati", s:6},
+  {n:"Hesablama Palatasının aparatının rəhbəri", t:"inzibati", s:6},
+  {n:"Ombudsmanın aparatının rəhbəri", t:"inzibati", s:6},
+  {n:"Naxçıvan Nazirlər Kabineti Aparatının rəhbəri", t:"inzibati", s:6},
+  {n:"Nazirliklərin aparatlarının rəhbərləri", t:"inzibati", s:6},
+  {n:"Bakı Şəhər İcra Hakimiyyəti başçısının birinci müavini", t:"inzibati", s:6},
+  // ── 7 ──
+  {n:"Prezident Administrasiyasında sektor müdiri", t:"inzibati", s:7},
+  {n:"Naxçıvan nümayəndəliyində sektor müdiri", t:"inzibati", s:7},
+  {n:"Prezidentin İşlər İdarəsində şöbə müdirinin müavini", t:"inzibati", s:7},
+  {n:"Nazirlər Kabinetinin aparatında şöbə müdirinin müavini", t:"inzibati", s:7},
+  {n:"Milli Məclisin aparatında şöbə müdirinin müavini", t:"inzibati", s:7},
+  {n:"Baş nazirin müşaviri", t:"inzibati", s:7},
+  {n:"Baş nazirin köməkçisi", t:"inzibati", s:7},
+  {n:"Milli Məclis sədrinin müşaviri", t:"inzibati", s:7},
+  {n:"Milli Məclis sədrinin köməkçisi", t:"inzibati", s:7},
+  {n:"Konstitusiya Məhkəməsi sədrinin müşaviri", t:"inzibati", s:7},
+  {n:"Ali Məhkəmə sədrinin müşaviri", t:"inzibati", s:7},
+  {n:"Ombudsman aparatı rəhbərinin müavini", t:"inzibati", s:7},
+  {n:"Hesablama Palatası aparatı rəhbərinin müavini", t:"inzibati", s:7},
+  {n:"Naxçıvan Nazirlər Kabineti Aparatı rəhbərinin müavini", t:"inzibati", s:7},
+  {n:"Nazirliklərin aparatları rəhbərlərinin müavinləri", t:"inzibati", s:7},
+  {n:"Naxçıvan Ali Məhkəməsinin aparatının rəhbəri", t:"inzibati", s:7},
+  {n:"Bakı Şəhər İcra Hakimiyyəti başçısının müavini", t:"inzibati", s:7},
+  {n:"Apellyasiya məhkəmələrinin aparatlarının rəhbərləri", t:"inzibati", s:7},
+  {n:"Mərkəzi Seçki Komissiyası Katibliyinin rəhbəri", t:"inzibati", s:7},
+  {n:"Korrupsiyaya qarşı mübarizə Komissiyasının katibi", t:"inzibati", s:7},
+  {n:"Digər mərkəzi icra hakimiyyəti orqanları aparatlarının rəhbərləri", t:"inzibati", s:7},
+  {n:"Prezident tərəfindən təyin edilən dövlət agentlikləri rəhbərləri", t:"inzibati", s:7},
+  {n:"Nazirliklərin yanında dövlət agentliklərinin rəhbərləri", t:"inzibati", s:7},
+  // ── 8 ──
+  {n:"Prezident Administrasiyasında baş məsləhətçi", t:"inzibati", s:8},
+  {n:"Naxçıvan nümayəndəliyində baş məsləhətçi", t:"inzibati", s:8},
+  {n:"Prezidentin İşlər İdarəsində sektor müdiri", t:"inzibati", s:8},
+  {n:"Prezidentin İşlər İdarəsində baş mühasib", t:"inzibati", s:8},
+  {n:"Nazirlər Kabinetinin İşlər İdarəsində şöbə müdiri", t:"inzibati", s:8},
+  {n:"Milli Məclisin İşlər İdarəsində şöbə müdiri", t:"inzibati", s:8},
+  {n:"Baş nazirin müavininin köməkçisi", t:"inzibati", s:8},
+  {n:"Milli Məclis sədrinin müavininin köməkçisi", t:"inzibati", s:8},
+  {n:"Ombudsmanın aparatında şöbə müdiri", t:"inzibati", s:8},
+  {n:"Hesablama Palatasının aparatında şöbə müdiri", t:"inzibati", s:8},
+  {n:"Nazirliklərin aparatlarında şöbə müdiri", t:"inzibati", s:8},
+  // ── 9 ──
+  {n:"Prezident Administrasiyasında böyük məsləhətçi", t:"inzibati", s:9},
+  {n:"Naxçıvan nümayəndəliyində böyük məsləhətçi", t:"inzibati", s:9},
+  {n:"Nazirlər Kabinetinin aparatında sektor müdiri", t:"inzibati", s:9},
+  {n:"Milli Məclisin aparatında sektor müdiri", t:"inzibati", s:9},
+  {n:"Konstitusiya Məhkəməsinin aparatında sektor müdiri", t:"inzibati", s:9},
+  {n:"Nazirlər Kabinetinin İşlər İdarəsində şöbə müdirinin müavini", t:"inzibati", s:9},
+  {n:"Naxçıvan Ali Məhkəməsi aparatının rəhbərinin müavini", t:"inzibati", s:9},
+  {n:"Ombudsman aparatının rəhbərinin müavini", t:"inzibati", s:9},
+  {n:"Apellyasiya məhkəmələri aparatlarının rəhbərlərinin müavinləri", t:"inzibati", s:9},
+  {n:"Mərkəzi Seçki Komissiyası Katibliyi rəhbərinin müavini", t:"inzibati", s:9},
+  {n:"Digər mərkəzi icra hakimiyyəti orqanları aparatlarının rəhbərlərinin müavinləri", t:"inzibati", s:9},
+  {n:"Nazirliklərin yanındakı dövlət agentliklərinin rəhbərlərinin müavinləri", t:"inzibati", s:9},
+  // ── 10 ──
+  {n:"Prezident Administrasiyasında aparıcı məsləhətçi", t:"inzibati", s:10},
+  {n:"Nazirlər Kabinetinin aparatında baş məsləhətçi", t:"inzibati", s:10},
+  {n:"Milli Məclisin aparatında baş məsləhətçi", t:"inzibati", s:10},
+  {n:"Nazirliyin rəhbərinin müşaviri", t:"inzibati", s:10},
+  {n:"Nazirliyin rəhbərinin köməkçisi", t:"inzibati", s:10},
+  {n:"Prezidentin İşlər müdirinin köməkçisi", t:"inzibati", s:10},
+  {n:"Nazirlər Kabineti İşlər müdirinin köməkçisi", t:"inzibati", s:10},
+  {n:"Nazirlər Kabinetinin aparatında sektor müdiri", t:"inzibati", s:10},
+  {n:"Nazirlər Kabinetinin İşlər İdarəsində sektor müdiri", t:"inzibati", s:10},
+  {n:"Hesablama Palatası sədrinin köməkçisi", t:"inzibati", s:10},
+  {n:"Ombudsmanın köməkçisi", t:"inzibati", s:10},
+  {n:"Naxçıvan Baş nazirinin müşaviri", t:"inzibati", s:10},
+  // ── 11 ──
+  {n:"Prezident Administrasiyasında məsləhətçi", t:"inzibati", s:11},
+  {n:"Prezidentin İşlər İdarəsində aparıcı məsləhətçi", t:"inzibati", s:11},
+  {n:"Nazirlər Kabinetinin aparatında böyük məsləhətçi", t:"inzibati", s:11},
+  {n:"Milli Məclisin aparatında böyük məsləhətçi", t:"inzibati", s:11},
+  {n:"Konstitusiya Məhkəməsinin aparatında böyük məsləhətçi", t:"inzibati", s:11},
+  {n:"Nazirlər Kabinetinin İşlər İdarəsində baş məsləhətçi", t:"inzibati", s:11},
+  {n:"Ombudsmanın aparatında şöbə müdirinin müavini", t:"inzibati", s:11},
+  {n:"Hesablama Palatası aparatında şöbə müdirinin müavini", t:"inzibati", s:11},
+  {n:"Nazirliklərin aparatlarında şöbə müdirinin müavini", t:"inzibati", s:11},
+  {n:"Naxçıvan Nazirlər Kabineti Aparatında şöbə müdirinin müavini", t:"inzibati", s:11},
+  {n:"Bakı Şəhər İcra Hakimiyyəti başçısının Aparatının rəhbəri", t:"inzibati", s:11},
+  {n:"Naxçıvan Ali Məhkəməsinin aparatında şöbə müdiri", t:"inzibati", s:11},
+  {n:"Apellyasiya məhkəmələrinin aparatlarında şöbə müdiri", t:"inzibati", s:11},
+  {n:"Mərkəzi Seçki Komissiyasının Katibliyində şöbə müdiri", t:"inzibati", s:11},
+  {n:"Digər mərkəzi icra hakimiyyəti orqanlarının aparatlarında şöbə müdiri", t:"inzibati", s:11},
+  {n:"Naxçıvan Prokurorluğunda şöbə müdiri", t:"inzibati", s:11},
+  // ── 12 ──
+  {n:"Prezidentin İşlər İdarəsində məsləhətçi", t:"inzibati", s:12},
+  {n:"Nazirlər Kabinetinin aparatında aparıcı məsləhətçi", t:"inzibati", s:12},
+  {n:"Milli Məclisin aparatında aparıcı məsləhətçi", t:"inzibati", s:12},
+  {n:"Konstitusiya Məhkəməsinin aparatında aparıcı məsləhətçi", t:"inzibati", s:12},
+  {n:"Ali Məhkəmənin aparatında aparıcı məsləhətçi", t:"inzibati", s:12},
+  {n:"Konstitusiya Məhkəməsi Aparatı rəhbərinin köməkçisi", t:"inzibati", s:12},
+  {n:"Nazirlər Kabinetinin İşlər İdarəsində böyük məsləhətçi", t:"inzibati", s:12},
+  // ── 13 ──
+  {n:"Nazirlər Kabinetinin aparatında məsləhətçi", t:"inzibati", s:13},
+  {n:"Milli Məclisin aparatında məsləhətçi", t:"inzibati", s:13},
+  {n:"Konstitusiya Məhkəməsinin aparatında məsləhətçi", t:"inzibati", s:13},
+  {n:"Ali Məhkəmənin aparatında məsləhətçi", t:"inzibati", s:13},
+  {n:"Ali Məhkəmənin aparatında məhkəmə iclasının katibi", t:"inzibati", s:13},
+  {n:"Ali Məhkəmənin aparatında hakimin köməkçisi", t:"inzibati", s:13},
+  {n:"Nazirlər Kabinetinin İşlər İdarəsində aparıcı məsləhətçi", t:"inzibati", s:13},
+  // ── 14 ──
+  {n:"Nazirlər Kabinetinin İşlər İdarəsində məsləhətçi", t:"inzibati", s:14},
+  {n:"Milli Məclisin İşlər müdirinin köməkçisi", t:"inzibati", s:14},
+  {n:"Prezident tərəfindən təyin edilən dövlət agentliklərinin aparatları rəhbərlərinin müavinləri", t:"inzibati", s:14},
+  {n:"Bakı Şəhər İcra Hakimiyyəti başçısının Aparatında şöbə müdiri", t:"inzibati", s:14},
+  {n:"Hərbi Prokurorluğunda şöbə müdiri", t:"inzibati", s:14},
+  // ── 15 ──
+  {n:"Hesablama Palatasının aparatında sektor müdiri", t:"inzibati", s:15},
+  {n:"Hesablama Palatasının aparatında baş mühasib", t:"inzibati", s:15},
+  {n:"Ombudsmanın aparatında sektor müdiri", t:"inzibati", s:15},
+  {n:"Baş Prokurorluğunda sektor müdiri", t:"inzibati", s:15},
+  {n:"Naxçıvan Nazirlər Kabineti Aparatında sektor müdiri", t:"inzibati", s:15},
+  {n:"Nazirliklərin aparatlarında sektor müdiri", t:"inzibati", s:15},
+  {n:"Nazirliklərin aparatlarında baş mühasib", t:"inzibati", s:15},
+  {n:"Prezident tərəfindən təyin edilən agentliklərin aparatlarında şöbə müdiri", t:"inzibati", s:15},
+  {n:"Naxçıvan Ali Məhkəməsinin aparatında şöbə müdirinin müavini", t:"inzibati", s:15},
+  {n:"Apellyasiya məhkəmələrinin aparatlarında şöbə müdirinin müavini", t:"inzibati", s:15},
+  {n:"Mərkəzi Seçki Komissiyasının Katibliyində şöbə müdirinin müavini", t:"inzibati", s:15},
+  {n:"Digər mərkəzi icra hakimiyyəti orqanlarının aparatlarında şöbə müdirinin müavini", t:"inzibati", s:15},
+  {n:"Gəncə icra hakimiyyəti başçısının birinci müavini", t:"inzibati", s:15},
+  {n:"Sumqayıt icra hakimiyyəti başçısının birinci müavini", t:"inzibati", s:15},
+  // ── 16 ──
+  {n:"Hesablama Palatasının aparatında baş məsləhətçi", t:"inzibati", s:16},
+  {n:"Ombudsmanın aparatında baş məsləhətçi", t:"inzibati", s:16},
+  {n:"Baş Prokurorluğunda baş məsləhətçi", t:"inzibati", s:16},
+  {n:"Naxçıvan Nazirlər Kabineti Aparatında baş məsləhətçi", t:"inzibati", s:16},
+  {n:"Nazirliklərin aparatlarında baş məsləhətçi", t:"inzibati", s:16},
+  {n:"Nazirliklərin yanında agentliklərin aparatlarında şöbə müdiri", t:"inzibati", s:16},
+  {n:"Gəncə icra hakimiyyəti başçısının müavini", t:"inzibati", s:16},
+  {n:"Sumqayıt icra hakimiyyəti başçısının müavini", t:"inzibati", s:16},
+  {n:"Digər yerli icra hakimiyyəti başçısının birinci müavini", t:"inzibati", s:16},
+  // ── 17 ──
+  {n:"Hesablama Palatasının aparatında böyük məsləhətçi", t:"inzibati", s:17},
+  {n:"Ombudsmanın aparatında böyük məsləhətçi", t:"inzibati", s:17},
+  {n:"Baş Prokurorluğunda böyük məsləhətçi", t:"inzibati", s:17},
+  {n:"Naxçıvan Nazirlər Kabineti Aparatında böyük məsləhətçi", t:"inzibati", s:17},
+  {n:"Nazirliklərin aparatlarında böyük məsləhətçi", t:"inzibati", s:17},
+  {n:"Bakı Şəhər İcra Hakimiyyəti başçısının Aparatında şöbə müdirinin müavini", t:"inzibati", s:17},
+  {n:"Bakı Şəhər İcra Hakimiyyəti başçısının müşaviri", t:"inzibati", s:17},
+  {n:"Bakı Şəhər İcra Hakimiyyəti başçısının köməkçisi", t:"inzibati", s:17},
+  {n:"Digər yerli icra hakimiyyəti başçısının müavini", t:"inzibati", s:17},
+  // ── 18 ──
+  {n:"Hesablama Palatasının aparatında aparıcı məsləhətçi", t:"inzibati", s:18},
+  {n:"Ombudsmanın aparatında aparıcı məsləhətçi", t:"inzibati", s:18},
+  {n:"Baş Prokurorluğunda aparıcı məsləhətçi", t:"inzibati", s:18},
+  {n:"Naxçıvan Nazirlər Kabineti Aparatında aparıcı məsləhətçi", t:"inzibati", s:18},
+  {n:"Nazirliklərin aparatlarında aparıcı məsləhətçi", t:"inzibati", s:18},
+  {n:"Ombudsmanın regional mərkəzlərinin rəhbərləri", t:"inzibati", s:18},
+  // ── 19 ──
+  {n:"Hesablama Palatasının aparatında məsləhətçi", t:"inzibati", s:19},
+  {n:"Ombudsmanın aparatında məsləhətçi", t:"inzibati", s:19},
+  {n:"Baş Prokurorluğunda məsləhətçi", t:"inzibati", s:19},
+  {n:"Naxçıvan Nazirlər Kabineti Aparatında məsləhətçi", t:"inzibati", s:19},
+  {n:"Nazirliklərin aparatlarında məsləhətçi", t:"inzibati", s:19},
+  {n:"Naxçıvan Ali Məhkəməsinin aparatında sektor müdiri", t:"inzibati", s:19},
+  {n:"Apellyasiya məhkəmələrinin aparatlarında sektor müdiri", t:"inzibati", s:19},
+  {n:"Mərkəzi Seçki Komissiyasının Katibliyində sektor müdiri", t:"inzibati", s:19},
+  {n:"Digər mərkəzi icra hakimiyyəti orqanlarının aparatlarında sektor müdiri", t:"inzibati", s:19},
+  {n:"Naxçıvan Ali Məhkəməsi sədrinin köməkçisi", t:"inzibati", s:19},
+  {n:"Nazirliklərin yanında agentliklərin aparatlarında şöbə müdirinin müavini", t:"inzibati", s:19},
+  {n:"Ombudsmanın regional mərkəzlərinin rəhbərlərinin müavinləri", t:"inzibati", s:19},
+  {n:"Naxçıvan mərkəzi icra hakimiyyəti orqanları aparatlarının rəhbərləri", t:"inzibati", s:19},
+  // ── 20 ──
+  {n:"Bakı Şəhər İcra Hakimiyyəti başçısının Aparatında sektor müdiri", t:"inzibati", s:20},
+  {n:"Bakı Şəhər İcra Hakimiyyəti başçısının Aparatında baş mühasib", t:"inzibati", s:20},
+  {n:"Hərbi Prokurorluğunda sektor müdiri", t:"inzibati", s:20},
+  {n:"Naxçıvan Prokurorluğunda sektor müdiri", t:"inzibati", s:20},
+  {n:"Prezident tərəfindən təyin edilən agentliklərin aparatlarında sektor müdiri", t:"inzibati", s:20},
+  {n:"Naxçıvan Ali Məhkəməsinin aparatında baş məsləhətçi", t:"inzibati", s:20},
+  {n:"Apellyasiya məhkəmələrinin aparatlarında baş məsləhətçi", t:"inzibati", s:20},
+  {n:"Mərkəzi Seçki Komissiyasının Katibliyində baş məsləhətçi", t:"inzibati", s:20},
+  {n:"Digər mərkəzi icra hakimiyyəti orqanlarının aparatlarında baş məsləhətçi", t:"inzibati", s:20},
+  {n:"Digər mərkəzi icra hakimiyyəti orqanlarının yanında agentliklərin aparatlarında şöbə müdiri", t:"inzibati", s:20},
+  {n:"Ağır cinayətlər məhkəmələrinin aparatlarında şöbə müdiri", t:"inzibati", s:20},
+  {n:"İnzibati məhkəmələrin aparatlarında şöbə müdiri", t:"inzibati", s:20},
+  {n:"Kommersiya məhkəmələrinin aparatlarında şöbə müdiri", t:"inzibati", s:20},
+  {n:"Hərbi məhkəmələrin aparatlarında şöbə müdiri", t:"inzibati", s:20},
+  {n:"Naxçıvan Mərkəzi Seçki Komissiyasının Aparatında şöbə müdiri", t:"inzibati", s:20},
+  {n:"Bakı Şəhər Prokurorluğunda şöbə müdiri", t:"inzibati", s:20},
+  {n:"Naxçıvan mərkəzi icra hakimiyyəti orqanlarının aparatlarında şöbə müdiri", t:"inzibati", s:20},
+  // ── 21 ──
+  {n:"Hərbi Prokurorluğunda baş məsləhətçi", t:"inzibati", s:21},
+  {n:"Naxçıvan Prokurorluğunda baş məsləhətçi", t:"inzibati", s:21},
+  {n:"Bakı Şəhər İcra Hakimiyyəti başçısının Aparatında baş məsləhətçi", t:"inzibati", s:21},
+  {n:"Prezident tərəfindən təyin edilən agentliklərin aparatlarında baş məsləhətçi", t:"inzibati", s:21},
+  {n:"Naxçıvan Ali Məhkəməsinin aparatında böyük məsləhətçi", t:"inzibati", s:21},
+  {n:"Mərkəzi Seçki Komissiyasının Katibliyində böyük məsləhətçi", t:"inzibati", s:21},
+  {n:"Apellyasiya məhkəmələrinin aparatlarında böyük məsləhətçi", t:"inzibati", s:21},
+  {n:"Digər mərkəzi icra hakimiyyəti orqanlarının aparatlarında böyük məsləhətçi", t:"inzibati", s:21},
+  {n:"Nazirliklərin yanında agentliklərin aparatlarında sektor müdiri", t:"inzibati", s:21},
+  // ── 22 ──
+  {n:"Hərbi Prokurorluğunda böyük məsləhətçi", t:"inzibati", s:22},
+  {n:"Naxçıvan Prokurorluğunda böyük məsləhətçi", t:"inzibati", s:22},
+  {n:"Bakı Şəhər İcra Hakimiyyəti başçısının Aparatında böyük məsləhətçi", t:"inzibati", s:22},
+  {n:"Naxçıvan Ali Məhkəməsinin aparatında aparıcı məsləhətçi", t:"inzibati", s:22},
+  {n:"Mərkəzi Seçki Komissiyasının Katibliyində aparıcı məsləhətçi", t:"inzibati", s:22},
+  {n:"Apellyasiya məhkəmələrinin aparatlarında aparıcı məsləhətçi", t:"inzibati", s:22},
+  {n:"Digər mərkəzi icra hakimiyyəti orqanlarının aparatlarında aparıcı məsləhətçi", t:"inzibati", s:22},
+  {n:"Mərkəzi icra hakimiyyəti orqanları yanında tabeliyindəki orqanların rəhbərləri", t:"inzibati", s:22},
+  {n:"Mərkəzi icra hakimiyyəti orqanlarının Bakı bölməsinin rəhbəri", t:"inzibati", s:22},
+  {n:"Naxçıvan mərkəzi icra hakimiyyəti orqanları yanındakı agentlik rəhbərləri", t:"inzibati", s:22},
+  {n:"Bakı Şəhər İcra Hakimiyyəti başçısının yanındakı orqanların rəhbərləri", t:"inzibati", s:22},
+  {n:"Nazirliklərin yanında agentliklərin aparatlarında baş məsləhətçi", t:"inzibati", s:22},
+  // ── 23 ──
+  {n:"Hərbi Prokurorluğunda aparıcı məsləhətçi", t:"inzibati", s:23},
+  {n:"Naxçıvan Prokurorluğunda aparıcı məsləhətçi", t:"inzibati", s:23},
+  {n:"Bakı Şəhər İcra Hakimiyyəti başçısının Aparatında aparıcı məsləhətçi", t:"inzibati", s:23},
+  {n:"Naxçıvan Ali Məhkəməsinin aparatında məsləhətçi", t:"inzibati", s:23},
+  {n:"Naxçıvan Ali Məhkəməsinin aparatında məhkəmə iclasının katibi", t:"inzibati", s:23},
+  {n:"Naxçıvan Ali Məhkəməsinin aparatında hakimin köməkçisi", t:"inzibati", s:23},
+  {n:"Mərkəzi Seçki Komissiyasının Katibliyində məsləhətçi", t:"inzibati", s:23},
+  {n:"Apellyasiya məhkəmələrinin aparatlarında məsləhətçi", t:"inzibati", s:23},
+  {n:"Apellyasiya məhkəmələrinin aparatlarında hakimin köməkçisi", t:"inzibati", s:23},
+  {n:"Apellyasiya məhkəmələrinin aparatlarında məhkəmə iclasının katibi", t:"inzibati", s:23},
+  {n:"Digər mərkəzi icra hakimiyyəti orqanlarının aparatlarında məsləhətçi", t:"inzibati", s:23},
+  {n:"Digər mərkəzi icra hakimiyyəti orqanları yanındakı agentliklərin aparatlarında şöbə müdirinin müavini", t:"inzibati", s:23},
+  {n:"Naxçıvan mərkəzi icra hakimiyyəti orqanlarının aparatlarında şöbə müdirinin müavini", t:"inzibati", s:23},
+  {n:"Ağır cinayətlər məhkəmələrinin aparatlarında şöbə müdirinin müavini", t:"inzibati", s:23},
+  {n:"İnzibati məhkəmələrin aparatlarında şöbə müdirinin müavini", t:"inzibati", s:23},
+  {n:"Nazirliklərin yanında agentliklərin aparatlarında böyük məsləhətçi", t:"inzibati", s:23},
+  {n:"Mərkəzi icra hakimiyyəti orqanlarının yerli bölmələrinin (Bakı istisna) rəhbərləri", t:"inzibati", s:23},
+  {n:"Naxçıvan mərkəzi icra hakimiyyəti orqanlarının yerli bölmələrinin rəhbərləri", t:"inzibati", s:23},
+  // ── 24 ──
+  {n:"Hərbi Prokurorluğunda məsləhətçi", t:"inzibati", s:24},
+  {n:"Naxçıvan Prokurorluğunda məsləhətçi", t:"inzibati", s:24},
+  {n:"Bakı Şəhər İcra Hakimiyyəti başçısının Aparatında məsləhətçi", t:"inzibati", s:24},
+  {n:"Prezident tərəfindən təyin edilən agentliklərin aparatlarında məsləhətçi", t:"inzibati", s:24},
+  {n:"Nazirliklərin yanında agentliklərin aparatlarında aparıcı məsləhətçi", t:"inzibati", s:24},
+  // ── 25 ──
+  {n:"Ağır cinayətlər məhkəmələrinin aparatlarında sektor müdiri", t:"inzibati", s:25},
+  {n:"İnzibati məhkəmələrin aparatlarında sektor müdiri", t:"inzibati", s:25},
+  {n:"Kommersiya məhkəmələrinin aparatlarında sektor müdiri", t:"inzibati", s:25},
+  {n:"Hərbi məhkəmələrin aparatlarında sektor müdiri", t:"inzibati", s:25},
+  {n:"Naxçıvan Mərkəzi Seçki Komissiyasının Aparatında sektor müdiri", t:"inzibati", s:25},
+  {n:"Digər mərkəzi icra hakimiyyəti orqanlarının yanındakı agentliklərin aparatlarında sektor müdiri", t:"inzibati", s:25},
+  {n:"Ombudsmanın regional mərkəzlərində sektor müdiri", t:"inzibati", s:25},
+  {n:"Bakı Şəhər Prokurorluğunda sektor müdiri", t:"inzibati", s:25},
+  {n:"Naxçıvan mərkəzi icra hakimiyyəti orqanlarının aparatlarında sektor müdiri", t:"inzibati", s:25},
+  {n:"Nazirliklərin yanında agentliklərin aparatlarında məsləhətçi", t:"inzibati", s:25},
+  // ── 26 ──
+  {n:"Ağır cinayətlər məhkəmələrinin aparatlarında baş məsləhətçi", t:"inzibati", s:26},
+  {n:"İnzibati məhkəmələrin aparatlarında baş məsləhətçi", t:"inzibati", s:26},
+  {n:"Naxçıvan Mərkəzi Seçki Komissiyasının Aparatında baş məsləhətçi", t:"inzibati", s:26},
+  {n:"Digər mərkəzi icra hakimiyyəti orqanlarının yanındakı agentliklərin aparatlarında baş məsləhətçi", t:"inzibati", s:26},
+  {n:"Ombudsmanın regional mərkəzlərində baş məsləhətçi", t:"inzibati", s:26},
+  {n:"Bakı Şəhər Prokurorluğunda baş məsləhətçi", t:"inzibati", s:26},
+  {n:"Naxçıvan mərkəzi icra hakimiyyəti orqanlarının aparatlarında baş məsləhətçi", t:"inzibati", s:26},
+  // ── 27 ──
+  {n:"Ağır cinayətlər məhkəmələrinin aparatlarında böyük məsləhətçi", t:"inzibati", s:27},
+  {n:"İnzibati məhkəmələrin aparatlarında böyük məsləhətçi", t:"inzibati", s:27},
+  {n:"Naxçıvan Mərkəzi Seçki Komissiyasının Aparatında böyük məsləhətçi", t:"inzibati", s:27},
+  {n:"Ombudsmanın regional mərkəzlərində böyük məsləhətçi", t:"inzibati", s:27},
+  {n:"Bakı Şəhər Prokurorluğunda böyük məsləhətçi", t:"inzibati", s:27},
+  {n:"Mərkəzi icra hakimiyyəti orqanlarının yerli bölmələri rəhbərinin müavinləri", t:"inzibati", s:27},
+  {n:"Tabeliyindəki orqanların rəhbərlərinin müavinləri", t:"inzibati", s:27},
+  {n:"Yerli icra hakimiyyəti (Bakı istisna) başçısının Aparatında şöbə müdiri", t:"inzibati", s:27},
+  // ── 28 ──
+  {n:"Ağır cinayətlər məhkəmələrinin aparatlarında aparıcı məsləhətçi", t:"inzibati", s:28},
+  {n:"İnzibati məhkəmələrin aparatlarında aparıcı məsləhətçi", t:"inzibati", s:28},
+  {n:"Naxçıvan Mərkəzi Seçki Komissiyasının Aparatında aparıcı məsləhətçi", t:"inzibati", s:28},
+  {n:"Ombudsmanın regional mərkəzlərində aparıcı məsləhətçi", t:"inzibati", s:28},
+  {n:"Bakı Şəhər Prokurorluğunda aparıcı məsləhətçi", t:"inzibati", s:28},
+  {n:"Mərkəzi icra hakimiyyəti orqanları yanındakı agentliklərin və tabeliyindəki orqanların yerli bölmələrinin rəhbərləri", t:"inzibati", s:28},
+  // ── 29 ──
+  {n:"Ağır cinayətlər məhkəmələrinin aparatlarında məsləhətçi", t:"inzibati", s:29},
+  {n:"İnzibati məhkəmələrin aparatlarında məsləhətçi", t:"inzibati", s:29},
+  {n:"Ağır cinayətlər məhkəmələrinin aparatlarında hakimin köməkçisi", t:"inzibati", s:29},
+  {n:"Ağır cinayətlər məhkəmələrinin aparatlarında məhkəmə iclasının katibi", t:"inzibati", s:29},
+  {n:"Naxçıvan Mərkəzi Seçki Komissiyasının Aparatında məsləhətçi", t:"inzibati", s:29},
+  {n:"Digər mərkəzi icra hakimiyyəti orqanlarının yanındakı agentliklərin aparatlarında məsləhətçi", t:"inzibati", s:29},
+  {n:"Ombudsmanın regional mərkəzlərində məsləhətçi", t:"inzibati", s:29},
+  {n:"Bakı Şəhər Prokurorluğunda məsləhətçi", t:"inzibati", s:29},
+  {n:"Yerli icra hakimiyyəti (Bakı istisna) başçısının Aparatında şöbə müdirinin müavini", t:"inzibati", s:29},
+  {n:"Mərkəzi icra hakimiyyəti orqanları yanındakı agentlik yerli bölmələrinin rəhbərlərinin müavinləri", t:"inzibati", s:29},
+  // ── 30 ──
+  {n:"Mərkəzi icra hakimiyyəti orqanları tabeliyindəki orqanların aparatlarında sektor müdiri", t:"inzibati", s:30},
+  {n:"Rayon məhkəmələrinin aparatlarında sektor müdiri", t:"inzibati", s:30},
+  {n:"Şəhər məhkəmələrinin aparatlarında sektor müdiri", t:"inzibati", s:30},
+  {n:"Rayon məhkəmələrinin aparatlarında baş mühasib", t:"inzibati", s:30},
+  {n:"Yerli icra hakimiyyəti (Bakı istisna) başçısının Aparatında sektor müdiri", t:"inzibati", s:30},
+  {n:"Yerli icra hakimiyyəti başçısının Aparatında baş mühasib", t:"inzibati", s:30},
+  {n:"Bakı Şəhər İcra Hakimiyyəti başçısının yanındakı orqanlarda sektor müdiri", t:"inzibati", s:30},
+  {n:"Mərkəzi icra hakimiyyəti orqanlarının yerli bölmələrində sektor müdiri", t:"inzibati", s:30},
+  {n:"Rayon və şəhər prokurorluqlarında sektor müdiri", t:"inzibati", s:30},
+  {n:"Hərbi prokurorluqlarda sektor müdiri", t:"inzibati", s:30},
+  {n:"Naxçıvan mərkəzi icra hakimiyyəti orqanlarının yerli bölmələrində sektor müdiri", t:"inzibati", s:30},
+  // ── 31 ──
+  {n:"Tabeliyindəki orqanların aparatlarında baş məsləhətçi", t:"inzibati", s:31},
+  {n:"Rayon məhkəmələrinin aparatlarında baş məsləhətçi", t:"inzibati", s:31},
+  {n:"Şəhər məhkəmələrinin aparatlarında baş məsləhətçi", t:"inzibati", s:31},
+  {n:"Yerli icra hakimiyyəti (Bakı istisna) başçısının Aparatında baş məsləhətçi", t:"inzibati", s:31},
+  {n:"Yerli icra hakimiyyəti başçısının köməkçisi", t:"inzibati", s:31},
+  {n:"Bakı Şəhər İcra Hakimiyyəti başçısının yanındakı orqanlarda baş məsləhətçi", t:"inzibati", s:31},
+  {n:"Mərkəzi icra hakimiyyəti orqanlarının yerli bölmələrində baş məsləhətçi", t:"inzibati", s:31},
+  {n:"Rayon və şəhər prokurorluqlarında baş məsləhətçi", t:"inzibati", s:31},
+  {n:"Agentlik yerli bölmələrində sektor müdiri", t:"inzibati", s:31},
+  // ── 32 ──
+  {n:"Tabeliyindəki orqanların aparatlarında böyük məsləhətçi", t:"inzibati", s:32},
+  {n:"Rayon məhkəmələrinin aparatlarında böyük məsləhətçi", t:"inzibati", s:32},
+  {n:"Şəhər məhkəmələrinin aparatlarında böyük məsləhətçi", t:"inzibati", s:32},
+  {n:"Yerli icra hakimiyyəti (Bakı istisna) başçısının Aparatında böyük məsləhətçi", t:"inzibati", s:32},
+  {n:"Bakı Şəhər İcra Hakimiyyəti başçısının yanındakı orqanlarda böyük məsləhətçi", t:"inzibati", s:32},
+  {n:"Mərkəzi icra hakimiyyəti orqanlarının yerli bölmələrində böyük məsləhətçi", t:"inzibati", s:32},
+  {n:"Rayon və şəhər prokurorluqlarında böyük məsləhətçi", t:"inzibati", s:32},
+  {n:"Agentlik yerli bölmələrində baş məsləhətçi", t:"inzibati", s:32},
+  // ── 33 ──
+  {n:"Tabeliyindəki orqanların aparatlarında aparıcı məsləhətçi", t:"inzibati", s:33},
+  {n:"Rayon məhkəmələrinin aparatlarında aparıcı məsləhətçi", t:"inzibati", s:33},
+  {n:"Şəhər məhkəmələrinin aparatlarında aparıcı məsləhətçi", t:"inzibati", s:33},
+  {n:"Yerli icra hakimiyyəti (Bakı istisna) başçısının Aparatında aparıcı məsləhətçi", t:"inzibati", s:33},
+  {n:"Bakı Şəhər İcra Hakimiyyəti başçısının yanındakı orqanlarda aparıcı məsləhətçi", t:"inzibati", s:33},
+  {n:"Mərkəzi icra hakimiyyəti orqanlarının yerli bölmələrində aparıcı məsləhətçi", t:"inzibati", s:33},
+  {n:"Rayon və şəhər prokurorluqlarında aparıcı məsləhətçi", t:"inzibati", s:33},
+  {n:"Agentlik yerli bölmələrində böyük məsləhətçi", t:"inzibati", s:33},
+  {n:"Yerli icra hakimiyyəti başçılarının şəhər inzibati ərazi dairələri üzrə nümayəndəsi", t:"inzibati", s:33},
+  {n:"Yerli icra hakimiyyəti başçılarının kənd inzibati ərazi dairələri üzrə nümayəndəsi", t:"inzibati", s:33},
+  // ── 34 ──
+  {n:"Tabeliyindəki orqanların aparatlarında məsləhətçi", t:"inzibati", s:34},
+  {n:"Rayon məhkəmələrinin aparatlarında məsləhətçi", t:"inzibati", s:34},
+  {n:"Rayon məhkəmələrinin aparatlarında məhkəmə iclasının katibi", t:"inzibati", s:34},
+  {n:"Rayon məhkəmələrinin aparatlarında hakim köməkçisi", t:"inzibati", s:34},
+  {n:"Yerli icra hakimiyyəti (Bakı istisna) başçısının Aparatında məsləhətçi", t:"inzibati", s:34},
+  {n:"Bakı Şəhər İcra Hakimiyyəti başçısının yanındakı orqanlarda məsləhətçi", t:"inzibati", s:34},
+  {n:"Mərkəzi icra hakimiyyəti orqanlarının yerli bölmələrində məsləhətçi", t:"inzibati", s:34},
+  {n:"Rayon və şəhər prokurorluqlarında məsləhətçi", t:"inzibati", s:34},
+  {n:"Agentlik yerli bölmələrində aparıcı məsləhətçi", t:"inzibati", s:34},
+  {n:"Yerli icra hakimiyyəti başçılarının şəhər inzibati ərazi dairələri üzrə nümayəndəliklərində baş məsləhətçi", t:"inzibati", s:34},
+  {n:"Yerli icra hakimiyyəti başçılarının kənd inzibati ərazi dairələri üzrə nümayəndəliklərində baş məsləhətçi", t:"inzibati", s:34},
+  // ── 35 ──
+  {n:"Agentlik yerli bölmələrində məsləhətçi", t:"inzibati", s:35},
+  {n:"Yerli icra hakimiyyəti başçılarının şəhər inzibati ərazi dairələri üzrə nümayəndəliklərində məsləhətçi (mühəndis)", t:"inzibati", s:35},
+  {n:"Yerli icra hakimiyyəti başçılarının qəsəbə inzibati ərazi dairələri üzrə nümayəndəliklərində məsləhətçi", t:"inzibati", s:35},
+  {n:"Yerli icra hakimiyyəti başçılarının kənd inzibati ərazi dairələri üzrə nümayəndəliklərində məsləhətçi", t:"inzibati", s:35},
+
+  // ════════════════════════════════════════════
+  // YARDIMÇI VƏZİFƏLƏR
+  // ════════════════════════════════════════════
+  // ── Y-1 ──
+  {n:"Prezident Administrasiyasında baş mütəxəssis (böyük inspektor, korrektor, sürücü, fotoqraf, videooperator və s.)", t:"yardimci", s:1},
+  {n:"Prezidentin İşlər İdarəsinin tabeliyindəki təşkilatlarda baş mütəxəssis", t:"yardimci", s:1},
+  {n:"Xüsusi Tibb Xidmətində baş mütəxəssis", t:"yardimci", s:1},
+  {n:"Protokol Xidmətində baş mütəxəssis (sürücü, fotoqraf, montajçı və s.)", t:"yardimci", s:1},
+  // ── Y-2 ──
+  {n:"Prezident Administrasiyasında böyük mütəxəssis (operator, inspektor, kitabxanaçı, xəzinədar, komendant, anbar müdiri)", t:"yardimci", s:2},
+  {n:"Xüsusi Tibb Xidmətində böyük mütəxəssis", t:"yardimci", s:2},
+  {n:"Protokol Xidmətində böyük mütəxəssis", t:"yardimci", s:2},
+  {n:"Nazirlər Kabinetinin Aparatında baş mütəxəssis (inspektor, sürücü, stenoqrafçı, korrektor)", t:"yardimci", s:2},
+  {n:"Milli Məclisin Aparatında baş mütəxəssis", t:"yardimci", s:2},
+  {n:"Konstitusiya Məhkəməsinin Aparatında baş mütəxəssis", t:"yardimci", s:2},
+  {n:"Ali Məhkəmənin Aparatında baş mütəxəssis", t:"yardimci", s:2},
+  // ── Y-3 ──
+  {n:"Prezident Administrasiyasında aparıcı mütəxəssis (kargüzar, katibə, ekspeditor, baş dispetçer)", t:"yardimci", s:3},
+  {n:"Xüsusi Tibb Xidmətində aparıcı mütəxəssis (kargüzar, katibə)", t:"yardimci", s:3},
+  {n:"Protokol Xidmətində aparıcı mütəxəssis", t:"yardimci", s:3},
+  {n:"Nazirlər Kabinetinin Aparatında böyük mütəxəssis (operator, inspektor, anbar müdiri, komendant)", t:"yardimci", s:3},
+  {n:"Milli Məclisin Aparatında böyük mütəxəssis", t:"yardimci", s:3},
+  {n:"Konstitusiya Məhkəməsinin Aparatında böyük mütəxəssis", t:"yardimci", s:3},
+  {n:"Ali Məhkəmənin Aparatında böyük mütəxəssis", t:"yardimci", s:3},
+  // ── Y-4 ──
+  {n:"Prezident Administrasiyasında mütəxəssis (kuryer, dispetçer, ixtisas dərəcəsi olan fəhlə)", t:"yardimci", s:4},
+  {n:"Xüsusi Tibb Xidmətində mütəxəssis (kuryer, dispetçer)", t:"yardimci", s:4},
+  {n:"Protokol Xidmətində mütəxəssis", t:"yardimci", s:4},
+  {n:"Nazirlər Kabinetinin Aparatında aparıcı mütəxəssis (kargüzar, katibə, ekspeditor, baş dispetçer)", t:"yardimci", s:4},
+  {n:"Milli Məclisin Aparatında aparıcı mütəxəssis (kargüzar, katibə)", t:"yardimci", s:4},
+  {n:"Konstitusiya Məhkəməsinin Aparatında aparıcı mütəxəssis", t:"yardimci", s:4},
+  {n:"Ali Məhkəmənin Aparatında aparıcı mütəxəssis", t:"yardimci", s:4},
+  // ── Y-5 ──
+  {n:"Nazirlər Kabinetinin Aparatında mütəxəssis (kuryer, dispetçer, ixtisas dərəcəsi olan fəhlə)", t:"yardimci", s:5},
+  {n:"Milli Məclisin Aparatında mütəxəssis (kuryer, dispetçer)", t:"yardimci", s:5},
+  {n:"Konstitusiya Məhkəməsinin Aparatında mütəxəssis", t:"yardimci", s:5},
+  {n:"Ali Məhkəmənin Aparatında mütəxəssis", t:"yardimci", s:5},
+  // ── Y-6 ──
+  {n:"Hesablama Palatasının Aparatında baş mütəxəssis (inspektor, sürücü, arxiv müdiri, məsul növbətçi)", t:"yardimci", s:6},
+  {n:"Naxçıvan Ali Məclisinin Aparatında baş mütəxəssis", t:"yardimci", s:6},
+  {n:"Ombudsmanın Aparatında baş mütəxəssis", t:"yardimci", s:6},
+  {n:"Baş Prokurorluğunda baş mütəxəssis", t:"yardimci", s:6},
+  {n:"Nazirliklərin aparatlarında baş mütəxəssis (rəhbərin katibi, arxiv müdiri, böyük inspektor, sürücü)", t:"yardimci", s:6},
+  {n:"Naxçıvan Nazirlər Kabineti Aparatında baş mütəxəssis", t:"yardimci", s:6},
+  // ── Y-7 ──
+  {n:"Hesablama Palatasının Aparatında böyük mütəxəssis (operator, inspektor, komendant, anbar müdiri)", t:"yardimci", s:7},
+  {n:"Ombudsmanın Aparatında böyük mütəxəssis", t:"yardimci", s:7},
+  {n:"Baş Prokurorluğunda böyük mütəxəssis", t:"yardimci", s:7},
+  {n:"Nazirliklərin aparatlarında böyük mütəxəssis (inspektor, statistik, anbar müdiri, komendant, texnik, makinaçı)", t:"yardimci", s:7},
+  {n:"Naxçıvan Nazirlər Kabineti Aparatında böyük mütəxəssis", t:"yardimci", s:7},
+  // ── Y-8 ──
+  {n:"Hesablama Palatasının Aparatında aparıcı mütəxəssis (kargüzar, katibə, ekspeditor, baş dispetçer)", t:"yardimci", s:8},
+  {n:"Ombudsmanın Aparatında aparıcı mütəxəssis", t:"yardimci", s:8},
+  {n:"Baş Prokurorluğunda aparıcı mütəxəssis", t:"yardimci", s:8},
+  {n:"Nazirliklərin aparatlarında aparıcı mütəxəssis (kargüzar, arxivçi, ekspeditor, katibə-makinaçı)", t:"yardimci", s:8},
+  {n:"Naxçıvan Nazirlər Kabineti Aparatında aparıcı mütəxəssis", t:"yardimci", s:8},
+  // ── Y-9 ──
+  {n:"Hesablama Palatasının Aparatında mütəxəssis (kuryer, ixtisas dərəcəsi olan fəhlə)", t:"yardimci", s:9},
+  {n:"Ombudsmanın Aparatında mütəxəssis", t:"yardimci", s:9},
+  {n:"Baş Prokurorluğunda mütəxəssis", t:"yardimci", s:9},
+  {n:"Nazirliklərin aparatlarında mütəxəssis (kuryer, ixtisas dərəcəsi olan fəhlə)", t:"yardimci", s:9},
+  {n:"Naxçıvan Nazirlər Kabineti Aparatında mütəxəssis", t:"yardimci", s:9},
+  // ── Y-10 ──
+  {n:"Naxçıvan Ali Məhkəməsinin aparatında baş mütəxəssis (rəhbərin katibi, sürücü, böyük inspektor)", t:"yardimci", s:10},
+  {n:"Apellyasiya məhkəmələrinin aparatlarında baş mütəxəssis", t:"yardimci", s:10},
+  {n:"Bakı Şəhər İcra Hakimiyyəti başçısının Aparatında baş mütəxəssis", t:"yardimci", s:10},
+  {n:"Ağır cinayətlər məhkəmələrinin aparatlarında baş mütəxəssis", t:"yardimci", s:10},
+  {n:"İnzibati məhkəmələrin aparatlarında baş mütəxəssis", t:"yardimci", s:10},
+  {n:"Hərbi məhkəmələrin aparatlarında baş mütəxəssis", t:"yardimci", s:10},
+  {n:"Mərkəzi icra hakimiyyəti orqanları yanındakı agentliklərin aparatlarında baş mütəxəssis", t:"yardimci", s:10},
+  {n:"Hərbi Prokurorluğunda baş mütəxəssis", t:"yardimci", s:10},
+  {n:"Naxçıvan Prokurorluğunda baş mütəxəssis", t:"yardimci", s:10},
+  {n:"Bakı Şəhər Prokurorluğunda baş mütəxəssis", t:"yardimci", s:10},
+  {n:"Digər mərkəzi icra hakimiyyəti orqanlarının aparatlarında baş mütəxəssis", t:"yardimci", s:10},
+  {n:"Mərkəzi Seçki Komissiyasının Katibliyində baş mütəxəssis", t:"yardimci", s:10},
+  // ── Y-11 ──
+  {n:"Naxçıvan Ali Məhkəməsinin aparatında böyük mütəxəssis (inspektor, statistik, anbar müdiri, komendant)", t:"yardimci", s:11},
+  {n:"Apellyasiya məhkəmələrinin aparatlarında böyük mütəxəssis", t:"yardimci", s:11},
+  {n:"Bakı Şəhər İcra Hakimiyyəti başçısının Aparatında böyük mütəxəssis", t:"yardimci", s:11},
+  {n:"Ağır cinayətlər, inzibati, kommersiya, hərbi məhkəmələrin aparatlarında böyük mütəxəssis", t:"yardimci", s:11},
+  {n:"Mərkəzi icra hakimiyyəti orqanları yanındakı agentliklərin aparatlarında böyük mütəxəssis", t:"yardimci", s:11},
+  {n:"Hərbi Prokurorluğunda böyük mütəxəssis", t:"yardimci", s:11},
+  {n:"Bakı Şəhər Prokurorluğunda böyük mütəxəssis", t:"yardimci", s:11},
+  {n:"Digər mərkəzi icra hakimiyyəti orqanlarının aparatlarında böyük mütəxəssis", t:"yardimci", s:11},
+  {n:"Mərkəzi Seçki Komissiyasının Katibliyində böyük mütəxəssis", t:"yardimci", s:11},
+  // ── Y-12 ──
+  {n:"Naxçıvan Ali Məhkəməsinin aparatında aparıcı mütəxəssis (kargüzar, arxivçi, ekspeditor)", t:"yardimci", s:12},
+  {n:"Apellyasiya məhkəmələrinin aparatlarında aparıcı mütəxəssis", t:"yardimci", s:12},
+  {n:"Bakı Şəhər İcra Hakimiyyəti başçısının Aparatında aparıcı mütəxəssis", t:"yardimci", s:12},
+  {n:"Ağır cinayətlər, inzibati, kommersiya məhkəmələrinin aparatlarında aparıcı mütəxəssis", t:"yardimci", s:12},
+  {n:"Mərkəzi icra hakimiyyəti orqanları yanındakı agentliklərin aparatlarında aparıcı mütəxəssis", t:"yardimci", s:12},
+  {n:"Hərbi Prokurorluğunda aparıcı mütəxəssis", t:"yardimci", s:12},
+  {n:"Bakı Şəhər Prokurorluğunda aparıcı mütəxəssis", t:"yardimci", s:12},
+  {n:"Mərkəzi Seçki Komissiyasının Katibliyində aparıcı mütəxəssis", t:"yardimci", s:12},
+  {n:"Digər mərkəzi icra hakimiyyəti orqanlarının aparatlarında aparıcı mütəxəssis", t:"yardimci", s:12},
+  // ── Y-13 ──
+  {n:"Naxçıvan Ali Məhkəməsinin aparatında mütəxəssis (kuryer, ixtisas dərəcəsi olan fəhlə)", t:"yardimci", s:13},
+  {n:"Apellyasiya məhkəmələrinin aparatlarında mütəxəssis", t:"yardimci", s:13},
+  {n:"Bakı Şəhər İcra Hakimiyyəti başçısının Aparatında mütəxəssis", t:"yardimci", s:13},
+  {n:"Ağır cinayətlər, inzibati, kommersiya, hərbi məhkəmələrin aparatlarında mütəxəssis", t:"yardimci", s:13},
+  {n:"Mərkəzi icra hakimiyyəti orqanları yanındakı agentliklərin aparatlarında mütəxəssis", t:"yardimci", s:13},
+  {n:"Hərbi Prokurorluğunda mütəxəssis", t:"yardimci", s:13},
+  {n:"Bakı Şəhər Prokurorluğunda mütəxəssis", t:"yardimci", s:13},
+  {n:"Mərkəzi Seçki Komissiyasının Katibliyində mütəxəssis", t:"yardimci", s:13},
+  {n:"Digər mərkəzi icra hakimiyyəti orqanlarının aparatlarında mütəxəssis", t:"yardimci", s:13},
+  // ── Y-14 ──
+  {n:"Mərkəzi icra hakimiyyəti orqanları yanında tabeliyindəki orqanlarda baş mütəxəssis (rəhbərin katibi, komendant, sosial işçi, sürücü)", t:"yardimci", s:14},
+  {n:"Rayon (şəhər) prokurorluqlarında baş mütəxəssis", t:"yardimci", s:14},
+  {n:"Hərbi prokurorluqlarda baş mütəxəssis", t:"yardimci", s:14},
+  {n:"Rayon (şəhər) məhkəmələrinin aparatlarında baş mütəxəssis", t:"yardimci", s:14},
+  {n:"Yerli icra hakimiyyəti başçılarının aparatlarında baş mütəxəssis", t:"yardimci", s:14},
+  {n:"Agentlik yerli bölmələrinin aparatlarında baş mütəxəssis", t:"yardimci", s:14},
+  // ── Y-15 ──
+  {n:"Mərkəzi icra hakimiyyəti orqanları yanında tabeliyindəki orqanlarda böyük mütəxəssis (inspektor, statistik, operator)", t:"yardimci", s:15},
+  {n:"Rayon (şəhər) prokurorluqlarında böyük mütəxəssis", t:"yardimci", s:15},
+  {n:"Rayon (şəhər) məhkəmələrinin aparatlarında böyük mütəxəssis", t:"yardimci", s:15},
+  {n:"Yerli icra hakimiyyəti başçılarının aparatlarında böyük mütəxəssis", t:"yardimci", s:15},
+  {n:"Agentlik yerli bölmələrinin aparatlarında böyük mütəxəssis", t:"yardimci", s:15},
+  // ── Y-16 ──
+  {n:"Mərkəzi icra hakimiyyəti orqanları yanında tabeliyindəki orqanlarda aparıcı mütəxəssis (kargüzar, arxivçi, ekspeditor)", t:"yardimci", s:16},
+  {n:"Rayon (şəhər) prokurorluqlarında aparıcı mütəxəssis", t:"yardimci", s:16},
+  {n:"Rayon (şəhər) məhkəmələrinin aparatlarında aparıcı mütəxəssis", t:"yardimci", s:16},
+  {n:"Yerli icra hakimiyyəti başçılarının aparatlarında aparıcı mütəxəssis", t:"yardimci", s:16},
+  {n:"Agentlik yerli bölmələrinin aparatlarında aparıcı mütəxəssis", t:"yardimci", s:16},
+  {n:"Yerli icra hakimiyyəti başçılarının inzibati ərazi dairələri üzrə nümayəndəliklərində aparıcı mütəxəssis", t:"yardimci", s:16},
+  // ── Y-17 ──
+  {n:"Mərkəzi icra hakimiyyəti orqanları yanında tabeliyindəki orqanlarda mütəxəssis (kuryer, ixtisas dərəcəsi olan fəhlə)", t:"yardimci", s:17},
+  {n:"Rayon (şəhər) prokurorluqlarında mütəxəssis", t:"yardimci", s:17},
+  {n:"Rayon (şəhər) məhkəmələrinin aparatlarında mütəxəssis", t:"yardimci", s:17},
+  {n:"Yerli icra hakimiyyəti başçılarının aparatlarında mütəxəssis", t:"yardimci", s:17},
+  {n:"Agentlik yerli bölmələrinin aparatlarında mütəxəssis", t:"yardimci", s:17},
+];
+
+// ─────────────────────────────────────────────
+// AXTARIŞ MEXANİZMİ
+// ─────────────────────────────────────────────
+const orqanlar={inzibati:[{value:'nazirlik',label:'Nazirlik aparatı'},{value:'prezident_admin',label:'Prezident Administrasiyası'},{value:'naz_kabineti',label:'Nazirlər Kabineti Aparatı'},{value:'milli_meclis',label:'Milli Məclis Aparatı'},{value:'agentlik_prez',label:'Prezident yanında dövlət agentliyi/xidməti'},{value:'agentlik_naz',label:'Nazirlik yanında dövlət agentliyi/xidməti'},{value:'yerli_ih',label:'Yerli icra hakimiyyəti (Bakı/Gəncə/Sumq. istisna)'},{value:'bsh_ixa',label:'Bakı Şəhər İcra Hakimiyyəti Aparatı'},{value:'rayon_mehkeme',label:'Rayon/Şəhər məhkəməsi aparatı'},{value:'apellyasiya',label:'Apellyasiya məhkəməsi aparatı'},{value:'ombudsman',label:'Ombudsman Aparatı'},{value:'prokurorluq',label:'Baş Prokurorluq'}],yardimci:[{value:'prez_y',label:'Prezident Administrasiyası'},{value:'naz_kab_y',label:'Nazirlər Kabineti Aparatı'},{value:'nazirlik_y',label:'Nazirlik aparatı'},{value:'agentlik_y',label:'Dövlət agentliyi / xidməti'},{value:'yerli_y',label:'Yerli icra hakimiyyəti / Rayon orqanları'},{value:'rayon_y',label:'Rayon/Şəhər məhkəməsi'},{value:'ombud_y',label:'Ombudsman / Prokurorluq'}]};
+const seviyyeAraliq={nazirlik:{min:8,max:35},prezident_admin:{min:1,max:35},naz_kabineti:{min:5,max:35},milli_meclis:{min:5,max:35},agentlik_prez:{min:9,max:35},agentlik_naz:{min:16,max:35},yerli_ih:{min:16,max:35},bsh_ixa:{min:14,max:35},rayon_mehkeme:{min:30,max:35},apellyasiya:{min:15,max:35},ombudsman:{min:11,max:35},prokurorluq:{min:11,max:35},prez_y:{min:1,max:4},naz_kab_y:{min:3,max:5},nazirlik_y:{min:6,max:9},agentlik_y:{min:10,max:13},yerli_y:{min:14,max:17},rayon_y:{min:14,max:17},ombud_y:{min:6,max:13}};
+
+const pillAd=['I','II','III','IV','V','VI','VII'];
+const stajAd=['1 ilə qədər','1–5 il staj','5–15 il staj','15+ il','15–20 il','20–25 il','25+ il'];
+
+let selectedPill=1, selectedSeviyye=null, selectedTip=null;
+let searchTimeout=null;
+
+function fmt(n){return n.toLocaleString('az-AZ');}
+
+// ── TAB ──
+function switchTab(tab){
+  document.getElementById('tab-search').classList.toggle('active',tab==='search');
+  document.getElementById('tab-manual').classList.toggle('active',tab==='manual');
+  document.getElementById('mode-search').style.display=tab==='search'?'block':'none';
+  document.getElementById('mode-manual').style.display=tab==='manual'?'block':'none';
+  selectedSeviyye=null;selectedTip=null;
+  document.getElementById('result-card').classList.remove('show');
+}
+
+// ── SEARCH ──
+function normalize(s){
+  return s.toLowerCase()
+    .replace(/ə/g,'e').replace(/ı/g,'i').replace(/ö/g,'o').replace(/ü/g,'u')
+    .replace(/ş/g,'s').replace(/ç/g,'c').replace(/ğ/g,'g').replace(/ñ/g,'n');
+}
+
+function highlight(text, q){
+  if(!q)return text;
+  const norm=normalize(text), normQ=normalize(q);
+  let res='',i=0;
+  while(i<text.length){
+    const idx=norm.indexOf(normQ,i);
+    if(idx===-1){res+=text.slice(i);break;}
+    res+=text.slice(i,idx)+'<mark>'+text.slice(idx,idx+q.length)+'</mark>';
+    i=idx+q.length;
+  }
+  return res;
+}
+
+function onSearch(val){
+  clearTimeout(searchTimeout);
+  const clear=document.getElementById('search-clear');
+  const icon=document.getElementById('search-icon');
+  clear.style.display=val?'block':'none';
+  icon.style.display=val?'none':'block';
+  if(!val.trim()){
+    document.getElementById('results-list').classList.remove('show');
+    return;
+  }
+  searchTimeout=setTimeout(()=>doSearch(val.trim()),150);
+}
+
+function doSearch(q){
+  const normQ=normalize(q);
+  const list=document.getElementById('results-list');
+  const hits=POSITIONS.filter(p=>normalize(p.n).includes(normQ)).slice(0,30);
+  if(!hits.length){
+    list.innerHTML='<div class="no-results">Nəticə tapılmadı. Başqa açar söz cəhd edin.</div>';
+    list.classList.add('show');return;
+  }
+  list.innerHTML=hits.map((p,i)=>{
+    const tbl=p.t==='inzibati'?INZ:YAR;
+    const baza=tbl[p.s][0];
+    const tipLabel=p.t==='inzibati'?'İnzibati':'Yardımçı';
+    return `<div class="result-item" onclick="selectPosition(${POSITIONS.indexOf(p)})" data-idx="${POSITIONS.indexOf(p)}">
+      <div class="result-item-name">${highlight(p.n,q)}</div>
+      <div class="result-item-meta">
+        <span>${tipLabel}</span>
+        <span>${p.s}. səviyyə</span>
+        <span>Baza: ${fmt(baza)} ₼</span>
+      </div>
+    </div>`;
+  }).join('');
+  list.classList.add('show');
+}
+
+function selectPosition(idx){
+  const p=POSITIONS[idx];
+  selectedSeviyye=p.s;
+  selectedTip=p.t;
+  document.getElementById('results-list').classList.remove('show');
+  const tbl=p.t==='inzibati'?INZ:YAR;
+  const baza=tbl[p.s][0];
+  const badge=document.getElementById('selected-badge');
+  document.getElementById('selected-badge-text').textContent=p.n;
+  document.getElementById('selected-badge-sev').textContent=`${p.s}. səviyyə · baza ${fmt(baza)} ₼`;
+  badge.classList.add('show');
+  calculate();
+}
+
+function clearSearch(){
+  document.getElementById('search-input').value='';
+  document.getElementById('results-list').classList.remove('show');
+  document.getElementById('search-clear').style.display='none';
+  document.getElementById('search-icon').style.display='block';
+}
+
+function clearSelection(){
+  selectedSeviyye=null;selectedTip=null;
+  document.getElementById('selected-badge').classList.remove('show');
+  document.getElementById('result-card').classList.remove('show');
+  document.getElementById('search-input').value='';
+  clearSearch();
+}
+
+// ── MANUAL MODE ──
+function onVazifeNovChange(){
+  const vn=document.getElementById('vazife-nov').value;
+  const os=document.getElementById('orqan');
+  os.innerHTML='<option value="">Seçin…</option>';
+  document.getElementById('seviyye').innerHTML='<option value="">Orqanı seçin</option>';
+  document.getElementById('result-card').classList.remove('show');
+  if(!vn)return;
+  orqanlar[vn].forEach(o=>{os.innerHTML+=`<option value="${o.value}">${o.label}</option>`;});
+}
+
+function onOrqanChange(){
+  const vn=document.getElementById('vazife-nov').value;
+  const orqan=document.getElementById('orqan').value;
+  const ss=document.getElementById('seviyye');
+  ss.innerHTML='';
+  if(!orqan){ss.innerHTML='<option value="">Orqanı seçin</option>';return;}
+  const ar=seviyyeAraliq[orqan];
+  const tbl=vn==='inzibati'?INZ:YAR;
+  for(let s=ar.min;s<=ar.max;s++){
+    if(!tbl[s])continue;
+    ss.innerHTML+=`<option value="${s}">${s}. ödəniş səviyyəsi (baza: ${fmt(tbl[s][0])} ₼)</option>`;
+  }
+  selectedSeviyye=parseInt(ss.value);selectedTip=vn;
+  calculate();
+}
+
+function selectPill(n){
+  selectedPill=n;
+  document.querySelectorAll('.pill-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('pill-'+n).classList.add('active');
+  calculate();
+}
+
+function calculate(){
+  // Determine source
+  let sev=selectedSeviyye, tip=selectedTip;
+
+  // If manual tab active, override
+  const manualActive=document.getElementById('mode-manual').style.display!=='none';
+  if(manualActive){
+    const vn=document.getElementById('vazife-nov').value;
+    const s=parseInt(document.getElementById('seviyye').value);
+    if(!vn||!s)return;
+    sev=s;tip=vn;
+    selectedSeviyye=s;selectedTip=vn;
+  }
+
+  if(!sev||!tip)return;
+  const tbl=tip==='inzibati'?INZ:YAR;
+  if(!tbl[sev])return;
+  const ixt=parseInt(document.getElementById('ixtisas').value)||0;
+  const baza=tbl[sev][0];
+  const pillMaas=tbl[sev][selectedPill-1];
+  const pillElave=pillMaas-baza;
+  const total=pillMaas+ixt;
+
+  document.getElementById('result-card').classList.add('show');
+  document.getElementById('total-display').innerHTML=`${fmt(total)} <sup>₼</sup>`;
+  document.getElementById('br-baza').textContent=`${fmt(baza)} ₼`;
+
+  const pr=document.getElementById('br-pill-row');
+  if(pillElave>0){
+    document.getElementById('br-pill-label').textContent=`${pillAd[selectedPill-1]} pill əlavəsi`;
+    document.getElementById('br-pill').textContent=`+ ${fmt(pillElave)} ₼`;
+    pr.style.display='flex';
+  }else{pr.style.display='none';}
+
+  const ir=document.getElementById('br-ixtisas-row');
+  if(ixt>0){
+    document.getElementById('br-ixtisas').textContent=`+ ${fmt(ixt)} ₼`;
+    ir.style.display='flex';
+  }else{ir.style.display='none';}
+
+  document.getElementById('br-total').textContent=`${fmt(total)} ₼`;
+  document.getElementById('pill-badge-el').textContent=`✦ ${pillAd[selectedPill-1]} pill · ${stajAd[selectedPill-1]} · ${fmt(pillMaas)} ₼`;
+  const tipLabel=tip==='inzibati'?'İnzibati':'Yardımçı';
+  document.getElementById('meta-seviyye-el').innerHTML=`${tipLabel} · ${sev}. ödəniş səviyyəsi`;
+}
+
+// Close dropdown on outside click
+document.addEventListener('click',e=>{
+  if(!e.target.closest('#mode-search')){
+    document.getElementById('results-list').classList.remove('show');
+  }
+});
+</script>
+</body>
+</html>
