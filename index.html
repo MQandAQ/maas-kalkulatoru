@@ -386,79 +386,81 @@
   <div class="card">
     <div class="step-label">
       <div class="step-num">3</div>
-      <div class="step-title">Qanuni tutulmalar (işçi payı)</div>
+      <div class="step-title">Qanuni tutulmalar — Dövlət sektoru · 2026</div>
       <div class="step-line"></div>
     </div>
 
     <!-- Vergi güzəşti -->
-    <div style="margin-bottom:14px;padding:10px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;">
-      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
-        <div>
-          <div style="font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:1px;color:var(--accent);text-transform:uppercase;margin-bottom:4px;">Gəlir vergisi güzəşti</div>
-          <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);">Vergi tutulacaq gəlir = Gross – güzəşt məbləği</div>
-        </div>
-        <div class="select-wrapper" style="min-width:200px;">
-          <select id="guzest" onchange="calculate()" style="font-size:12px;padding:8px 32px 8px 10px;">
-            <option value="200">Ümumi güzəşt — 200 ₼ (VM 102.1.6)</option>
-            <option value="400">Müharibə Qəhrəmanı / Milli Qəhrəman — 400 ₼</option>
-            <option value="200+200">Müharibə veteranı (əlil) — 400 ₼</option>
-            <option value="100">Həlak olmuş döyüşçü valideyn/arvadı — 100 ₼</option>
-            <option value="50">Himayəsində 3+ nəfər — 50 ₼</option>
-            <option value="0">Güzəştsiz — 0 ₼</option>
-          </select>
-        </div>
+    <div style="margin-bottom:16px;padding:10px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+      <div>
+        <div style="font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:1px;color:var(--accent);text-transform:uppercase;margin-bottom:4px;">Gəlir vergisi güzəşti (VM 102.1)</div>
+        <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);">Vergi tutulacaq gəlir = Gross − güzəşt məbləği</div>
+      </div>
+      <div class="select-wrapper" style="min-width:220px;">
+        <select id="guzest" onchange="calculate()" style="font-size:12px;padding:8px 32px 8px 10px;">
+          <option value="200">Ümumi güzəşt — 200 ₼ (m.102.1.6)</option>
+          <option value="400">Müharibə / Milli Qəhrəman — 400 ₼</option>
+          <option value="100">Həlak olmuş döyüşçü valideyn/arvadı — 100 ₼</option>
+          <option value="50">Himayəsində 3+ nəfər — 50 ₼</option>
+          <option value="0">Güzəştsiz — 0 ₼</option>
+        </select>
       </div>
     </div>
 
-    <div class="deduct-grid" id="deduct-grid">
+    <!-- ── SİĞORTAOLUNAN (İŞÇİ) ── -->
+    <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--danger);margin-bottom:10px;display:flex;align-items:center;gap:10px;">
+      <span>Sığortaolunan (İşçidən tutulan)</span>
+      <span style="flex:1;height:1px;background:rgba(217,112,112,0.2);display:block;"></span>
+    </div>
+    <div class="deduct-grid" style="margin-bottom:20px;">
       <!-- GV -->
       <div class="deduct-item" id="di-gv">
         <div class="deduct-header">
           <div>
             <div class="deduct-name">Gəlir vergisi (GV)</div>
-            <div class="law-ref">VM maddə 101.1 · Dövlət sektoru</div>
+            <div class="law-ref">VM m.101.1 · Dövlət sektoru</div>
           </div>
           <div class="deduct-toggle" onclick="toggleDeduct('gv')">
             <div class="toggle-switch on" id="toggle-gv"></div>
           </div>
         </div>
-        <div class="deduct-formula" id="formula-gv">—</div>
+        <div class="deduct-formula" id="formula-gv">≤2500: ×14% · >2500: 350+(artıq)×25%</div>
         <div class="deduct-amount" id="amt-gv">— ₼</div>
       </div>
-      <!-- MDSS -->
+      <!-- MDSS İŞÇİ -->
       <div class="deduct-item" id="di-mdss">
         <div class="deduct-header">
           <div>
-            <div class="deduct-name">Sosial sığorta (MDSS)</div>
-            <div class="law-ref">Sığorta haqqında Qanun, m.14.3.2</div>
+            <div class="deduct-name">MDSS — işçi payı</div>
+            <div class="law-ref">Sosial sığorta Qanunu m.14.3.2</div>
           </div>
           <div class="deduct-toggle" onclick="toggleDeduct('mdss')">
             <div class="toggle-switch on" id="toggle-mdss"></div>
           </div>
         </div>
-        <div class="deduct-formula" id="formula-mdss">200-dək: 3% · 200-8000: 10% · 8000+: 10%</div>
+        <div class="deduct-formula" id="formula-mdss">Gross × 3% (m.14.3.2)</div>
         <div class="deduct-amount" id="amt-mdss">— ₼</div>
       </div>
-      <!-- İTS -->
+      <!-- İTS İŞÇİ -->
       <div class="deduct-item" id="di-its">
         <div class="deduct-header">
           <div>
-            <div class="deduct-name">Tibbi sığorta (İTS)</div>
-            <div class="law-ref">Tibbi sığorta haqqında Qanun · 2026</div>
+            <div class="deduct-name">İTS — işçi payı</div>
+            <div class="law-ref">Tibbi sığorta Qanunu · 2026</div>
           </div>
           <div class="deduct-toggle" onclick="toggleDeduct('its')">
             <div class="toggle-switch on" id="toggle-its"></div>
           </div>
         </div>
-        <div class="deduct-formula" id="formula-its">2500-dək: 2% · 2500+: 0.5%</div>
+        <div class="deduct-formula" id="formula-its">8000-dək: 2% · 8000+: 0.5%</div>
         <div class="deduct-amount" id="amt-its">— ₼</div>
       </div>
-      <!-- İŞSİZLİK -->
+      <!-- İŞSİZLİK İŞÇİ -->
       <div class="deduct-item" id="di-issiz">
         <div class="deduct-header">
           <div>
-            <div class="deduct-name">İşsizlik sığortası</div>
-            <div class="law-ref">İşsizlikdən sığorta haqqında Qanun</div>
+            <div class="deduct-name">İşsizlik sığortası — işçi</div>
+            <div class="law-ref">İşsizlikdən sığorta Qanunu</div>
           </div>
           <div class="deduct-toggle" onclick="toggleDeduct('issiz')">
             <div class="toggle-switch on" id="toggle-issiz"></div>
@@ -466,6 +468,59 @@
         </div>
         <div class="deduct-formula" id="formula-issiz">Gross × 0.5%</div>
         <div class="deduct-amount" id="amt-issiz">— ₼</div>
+      </div>
+    </div>
+
+    <!-- ── SİĞORTAEDƏN (İŞƏGÖTÜRƏN) ── -->
+    <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--accent2);margin-bottom:10px;display:flex;align-items:center;gap:10px;">
+      <span>Sığortaedən (İşəgötürən tərəfindən ödənilən)</span>
+      <span style="flex:1;height:1px;background:rgba(110,181,203,0.2);display:block;"></span>
+    </div>
+    <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:10px;padding:8px 12px;background:rgba(110,181,203,0.05);border:1px solid rgba(110,181,203,0.12);border-radius:6px;">
+      İşəgötürən payı işçinin maaşından tutulmur — dövlət büdcəsinə ayrıca ödənilir. Ümumi işçi xərcini (Super-Gross) görmək üçün aşağıdakı cədvələ baxın.
+    </div>
+    <div class="deduct-grid">
+      <!-- MDSS İŞƏGÖTÜRƏN -->
+      <div class="deduct-item" style="border-color:rgba(110,181,203,0.15);" id="di-mdss-e">
+        <div class="deduct-header">
+          <div>
+            <div class="deduct-name" style="color:var(--accent2);">MDSS — işəgötürən payı</div>
+            <div class="law-ref">Sosial sığorta Qanunu m.14.3.1</div>
+          </div>
+          <div class="deduct-toggle" onclick="toggleDeduct('mdss_e')">
+            <div class="toggle-switch on" id="toggle-mdss_e" style="background:var(--accent2);"></div>
+          </div>
+        </div>
+        <div class="deduct-formula" id="formula-mdss-e">Gross × 22% (m.14.3.1)</div>
+        <div class="deduct-amount" style="color:var(--accent2);" id="amt-mdss-e">— ₼</div>
+      </div>
+      <!-- İTS İŞƏGÖTÜRƏN -->
+      <div class="deduct-item" style="border-color:rgba(110,181,203,0.15);" id="di-its-e">
+        <div class="deduct-header">
+          <div>
+            <div class="deduct-name" style="color:var(--accent2);">İTS — işəgötürən payı</div>
+            <div class="law-ref">Tibbi sığorta Qanunu · 2026</div>
+          </div>
+          <div class="deduct-toggle" onclick="toggleDeduct('its_e')">
+            <div class="toggle-switch on" id="toggle-its_e" style="background:var(--accent2);"></div>
+          </div>
+        </div>
+        <div class="deduct-formula" id="formula-its-e">8000-dək: 2% · 8000+: 0.5%</div>
+        <div class="deduct-amount" style="color:var(--accent2);" id="amt-its-e">— ₼</div>
+      </div>
+      <!-- İŞSİZLİK İŞƏGÖTÜRƏN -->
+      <div class="deduct-item" style="border-color:rgba(110,181,203,0.15);" id="di-issiz-e">
+        <div class="deduct-header">
+          <div>
+            <div class="deduct-name" style="color:var(--accent2);">İşsizlik sığortası — işəgötürən</div>
+            <div class="law-ref">İşsizlikdən sığorta Qanunu</div>
+          </div>
+          <div class="deduct-toggle" onclick="toggleDeduct('issiz_e')">
+            <div class="toggle-switch on" id="toggle-issiz_e" style="background:var(--accent2);"></div>
+          </div>
+        </div>
+        <div class="deduct-formula" id="formula-issiz-e">Gross × 0.5%</div>
+        <div class="deduct-amount" style="color:var(--accent2);" id="amt-issiz-e">— ₼</div>
       </div>
     </div>
   </div>
@@ -498,7 +553,7 @@
       </div>
       <div class="result-arrow">→</div>
       <div class="result-box deduct">
-        <div class="result-box-label">Cəmi Tutulmalar</div>
+        <div class="result-box-label">İşçidən Tutulmalar</div>
         <div class="result-box-amount" id="r-deduct">—</div>
         <div class="result-box-sub">₼ çıxılır</div>
       </div>
@@ -508,6 +563,15 @@
         <div class="result-box-amount" id="r-net">—</div>
         <div class="result-box-sub">₼ / ay</div>
       </div>
+    </div>
+
+    <!-- Super-gross strip -->
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:rgba(110,181,203,0.06);border:1px solid rgba(110,181,203,0.15);border-radius:8px;margin-bottom:20px;flex-wrap:wrap;gap:10px;">
+      <div>
+        <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent2);margin-bottom:3px;">Super-Gross (İşəgötürən üçün tam xərc)</div>
+        <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);">Gross + işəgötürən MDSS + İTS + İşsizlik payı</div>
+      </div>
+      <div style="font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:700;color:var(--accent2);" id="r-supergross">— ₼</div>
     </div>
 
     <!-- Breakdown -->
@@ -520,16 +584,28 @@
       <div class="brow total-gross"><span class="brow-label">GROSS (Hesablanmış maaş)</span><span class="brow-val" id="b-gross-total">—</span></div>
 
       <div class="divider"></div>
-      <div class="breakdown-title" style="margin-top:4px;">Tutulmalar</div>
+      <div class="breakdown-title" style="margin-top:4px;color:var(--danger);">Sığortaolunan (İşçidən tutulan)</div>
 
-      <div class="brow sub" id="b-gv-row"><span class="brow-label" id="b-gv-lbl">Gəlir vergisi</span><span class="brow-val" id="b-gv">—</span></div>
-      <div class="brow sub" id="b-mdss-row"><span class="brow-label">Sosial sığorta (MDSS)</span><span class="brow-val" id="b-mdss">—</span></div>
-      <div class="brow sub" id="b-its-row"><span class="brow-label">Tibbi sığorta (İTS)</span><span class="brow-val" id="b-its">—</span></div>
-      <div class="brow sub" id="b-issiz-row"><span class="brow-label">İşsizlik sığortası</span><span class="brow-val" id="b-issiz">—</span></div>
+      <div class="brow sub" id="b-gv-row"><span class="brow-label" id="b-gv-lbl">Gəlir vergisi (GV)</span><span class="brow-val" id="b-gv">—</span></div>
+      <div class="brow sub" id="b-mdss-row"><span class="brow-label">MDSS — işçi payı</span><span class="brow-val" id="b-mdss">—</span></div>
+      <div class="brow sub" id="b-its-row"><span class="brow-label">İTS — işçi payı</span><span class="brow-val" id="b-its">—</span></div>
+      <div class="brow sub" id="b-issiz-row"><span class="brow-label">İşsizlik — işçi payı</span><span class="brow-val" id="b-issiz">—</span></div>
       <div id="b-custom-rows"></div>
 
       <div class="divider"></div>
       <div class="brow total-net"><span class="brow-label">NET (Ələ çatan maaş)</span><span class="brow-val" id="b-net-total">—</span></div>
+
+      <div class="divider" style="margin-top:10px;"></div>
+      <div class="breakdown-title" style="color:var(--accent2);margin-top:4px;">Sığortaedən (İşəgötürən tərəfindən dövlətə ödənilən)</div>
+
+      <div class="brow" id="b-mdss-e-row" style="display:none;"><span class="brow-label" style="color:var(--accent2);">MDSS — işəgötürən payı</span><span class="brow-val" style="color:var(--accent2);" id="b-mdss-e">—</span></div>
+      <div class="brow" id="b-its-e-row" style="display:none;"><span class="brow-label" style="color:var(--accent2);">İTS — işəgötürən payı</span><span class="brow-val" style="color:var(--accent2);" id="b-its-e">—</span></div>
+      <div class="brow" id="b-issiz-e-row" style="display:none;"><span class="brow-label" style="color:var(--accent2);">İşsizlik — işəgötürən payı</span><span class="brow-val" style="color:var(--accent2);" id="b-issiz-e">—</span></div>
+
+      <div class="brow" id="b-supergross-row" style="background:rgba(110,181,203,0.08);border:1px solid rgba(110,181,203,0.15);border-radius:7px;margin-top:6px;display:none;">
+        <span class="brow-label" style="color:var(--accent2);font-size:14px;font-weight:500;">SUPER-GROSS (İşçinin tam dəyəri)</span>
+        <span class="brow-val" style="color:var(--accent2);font-size:14px;font-weight:500;" id="b-supergross-val">—</span>
+      </div>
     </div>
   </div>
 
@@ -571,50 +647,71 @@ const INZ={1:[13680,14020,14365,14705,15050,15390,15730],2:[12725,13045,13360,13
 const YAR={1:[1165,1195,1220,1250,1280,1310,1340],2:[1135,1160,1190,1220,1245,1275,1305],3:[1105,1130,1160,1185,1215,1240,1270],4:[1075,1100,1130,1155,1180,1210,1235],5:[1045,1070,1100,1125,1150,1175,1205],6:[1020,1045,1070,1095,1120,1145,1170],7:[990,1015,1040,1065,1090,1115,1140],8:[965,990,1015,1040,1065,1085,1110],9:[940,965,985,1010,1035,1060,1080],10:[915,940,960,985,1010,1030,1055],11:[890,915,935,960,980,1005,1025],12:[870,890,910,935,955,975,1000],13:[845,865,890,910,930,950,970],14:[825,845,865,885,905,925,945],15:[800,820,840,860,880,900,920],16:[780,800,820,840,860,880,900],17:[760,780,800,815,835,855,875]};
 
 // ── TUTULMALAR STATE ──
-const deductOn={gv:true,mdss:true,its:true,issiz:true};
+const deductOn={gv:true,mdss:true,its:true,issiz:true,mdss_e:true,its_e:true,issiz_e:true};
 let customList=[];
 let customId=0;
 
 function toggleDeduct(k){
   deductOn[k]=!deductOn[k];
-  document.getElementById('toggle-'+k).classList.toggle('on',deductOn[k]);
+  const tog=document.getElementById('toggle-'+k);
+  if(tog) tog.classList.toggle('on',deductOn[k]);
   calculate();
 }
 
-// ── TUTULMA HESABLAMALARI (Dövlət sektoru · 2026) ──
+// ── TUTULMA HESABLAMALARI — DÖVLƏT SEKTORU 2026 ──
+// Mənbə: VM m.101.1; Sosial sığorta Qanunu m.14.3; Tibbi sığorta Qanunu; İşsizlik Qanunu m.9
+
+// İŞÇİ (SİĞORTAOLUNAN) PAYI ─────────────────────
+
 function calcGV(gross, guzest){
-  // VM 101.1 · Dövlət sektoru: sabit 14%
-  const vergitutulan=Math.max(0, gross - guzest);
-  if(vergitutulan<=0) return 0;
-  // Dövlət sektoru üçün düz 14%
-  return round2(vergitutulan * 0.14);
+  // VM m.101.1 — Dövlət sektoru
+  // ≤2500: 14% | >2500: 350 + (gross−2500)×25%
+  // Güzəşt əvvəl tətbiq edilir
+  const vt = Math.max(0, gross - guzest);
+  if(vt <= 0)    return 0;
+  if(vt <= 2500) return round2(vt * 0.14);
+  return round2(350 + (vt - 2500) * 0.25);
 }
 
-function calcMDSS(gross){
-  // Sosial sığorta haqqında Qanun m.14.3.2
-  // 0-200: 3%, 200-8000: 10%, 8000+: 10%
-  let ss=0;
-  if(gross<=200){
-    ss=gross*0.03;
-  } else if(gross<=8000){
-    ss=200*0.03+(gross-200)*0.10;
-  } else {
-    ss=200*0.03+7800*0.10+(gross-8000)*0.10;
-  }
-  return round2(ss);
+function calcMDSS_isci(gross){
+  // Sosial sığorta Qanunu m.14.3.2 — işçi payı: 3%
+  return round2(gross * 0.03);
 }
 
-function calcITS(gross){
-  // Tibbi sığorta haqqında Qanun · 2026
-  // 0-2500: 2%, 2500+: 0.5%
-  if(gross<=2500) return round2(gross*0.02);
-  return round2(2500*0.02+(gross-2500)*0.005);
+function calcITS_isci(gross){
+  // Tibbi sığorta Qanunu — sığortaolunan payı
+  // 8000-dək: 2% | 8000+: 0.5%
+  if(gross <= 8000) return round2(gross * 0.02);
+  return round2(160 + (gross - 8000) * 0.005);
 }
 
-function calcIssiz(gross){
-  // İşsizlikdən sığorta: 0.5%
-  return round2(gross*0.005);
+function calcIssiz_isci(gross){
+  // İşsizlik Qanunu m.9.0.2 — işçi: 0.5%
+  return round2(gross * 0.005);
 }
+
+// İŞƏGÖTÜRƏN (SİĞORTAEDƏN) PAYI ────────────────
+
+function calcMDSS_isegoten(gross){
+  // Sosial sığorta Qanunu m.14.3.1 — işəgötürən: 22%
+  return round2(gross * 0.22);
+}
+
+function calcITS_isegoten(gross){
+  // Tibbi sığorta Qanunu — sığortalı (işəgötürən) payı
+  // 8000-dək: 2% | 8000+: 0.5%
+  if(gross <= 8000) return round2(gross * 0.02);
+  return round2(160 + (gross - 8000) * 0.005);
+}
+
+function calcIssiz_isegoten(gross){
+  // İşsizlik Qanunu m.9.0.1 — işəgötürən: 0.5%
+  return round2(gross * 0.005);
+}
+
+// köhnə adları saxlayırıq (ITS alias)
+function calcITS(gross){ return calcITS_isci(gross); }
+function calcIssiz(gross){ return calcIssiz_isci(gross); }
 
 function round2(n){return Math.round(n*100)/100;}
 function fmt(n){return n.toLocaleString('az-AZ',{minimumFractionDigits:2,maximumFractionDigits:2});}
@@ -807,51 +904,75 @@ function calculate(){
   // Güzəşt
   const guzestSel=document.getElementById('guzest').value;
   let guzest=200;
-  if(guzestSel==='400') guzest=400;
-  else if(guzestSel==='200+200') guzest=400;
+  if(guzestSel==='400')     guzest=400;
   else if(guzestSel==='100') guzest=100;
-  else if(guzestSel==='50') guzest=50;
-  else if(guzestSel==='0') guzest=0;
-  else guzest=200;
+  else if(guzestSel==='50')  guzest=50;
+  else if(guzestSel==='0')   guzest=0;
+  else                        guzest=200;
 
-  // Tutulmalar
-  const gv  = deductOn.gv   ? calcGV(gross,guzest)  : 0;
-  const mdss= deductOn.mdss  ? calcMDSS(gross)        : 0;
-  const its = deductOn.its   ? calcITS(gross)          : 0;
-  const issiz=deductOn.issiz ? calcIssiz(gross)        : 0;
+  // Tutulmalar — İŞÇİ
+  const gv   = deductOn.gv    ? calcGV(gross,guzest)       : 0;
+  const mdss = deductOn.mdss  ? calcMDSS_isci(gross)        : 0;
+  const its  = deductOn.its   ? calcITS(gross)              : 0;
+  const issiz= deductOn.issiz ? calcIssiz(gross)            : 0;
+
+  // Tutulmalar — İŞƏGÖTÜRƏN
+  const mdss_e = deductOn.mdss_e  ? calcMDSS_isegoten(gross) : 0;
+  const its_e  = deductOn.its_e   ? calcITS_isegoten(gross)  : 0;
+  const issiz_e= deductOn.issiz_e ? calcIssiz_isegoten(gross) : 0;
 
   // Custom
   const customAmounts=customList.map(c=>({name:c.name||'Tutulma',rate:c.rate,amt:round2(gross*c.rate/100)}));
   const customTotal=customAmounts.reduce((a,c)=>a+c.amt,0);
 
-  const totalDeduct=round2(gv+mdss+its+issiz+customTotal);
-  const net=round2(gross-totalDeduct);
+  const totalIsciDeduct=round2(gv+mdss+its+issiz+customTotal);
+  const totalIsegoten=round2(mdss_e+its_e+issiz_e);
+  const net=round2(gross-totalIsciDeduct);
+  const supergross=round2(gross+totalIsegoten);
 
   // ── Ekran ──
   document.getElementById('result-card').classList.add('show');
   document.getElementById('r-gross').textContent=fmt0(gross);
-  document.getElementById('r-deduct').textContent=fmt0(totalDeduct);
+  document.getElementById('r-deduct').textContent=fmt0(totalIsciDeduct);
   document.getElementById('r-net').textContent=fmt0(net);
+  document.getElementById('r-supergross').textContent=`${fmt0(supergross)} ₼`;
 
-  // Tutulma kartları
-  const gvFormula=deductOn.gv?`(Gross ${fmt0(gross)} – güzəşt ${fmt0(guzest)}) × 14% = ${fmt(gv)} ₼`:'Deaktiv';
+  // İŞÇİ tutulma kartları
+  const vt = Math.max(0, gross - guzest);
+  const gvFormula = deductOn.gv
+    ? (vt <= 2500
+        ? `(${fmt0(gross)} − ${fmt0(guzest)}) × 14% = ${fmt(gv)} ₼`
+        : `350 + (${fmt0(vt)} − 2500) × 25% = ${fmt(gv)} ₼`)
+    : 'Deaktiv';
   document.getElementById('formula-gv').textContent=gvFormula;
   document.getElementById('amt-gv').textContent=deductOn.gv?`${fmt(gv)} ₼`:'—';
-  document.getElementById('amt-gv').className='deduct-amount'+(deductOn.gv&&gv>0?'':' zero');
+  document.getElementById('amt-gv').className='deduct-amount'+(gv>0?'':' zero');
 
-  const mdssFormula=deductOn.mdss?`200dək 3% + qalan 10% = ${fmt(mdss)} ₼`:'Deaktiv';
-  document.getElementById('formula-mdss').textContent=mdssFormula;
+  document.getElementById('formula-mdss').textContent=deductOn.mdss?`${fmt0(gross)} × 3% = ${fmt(mdss)} ₼`:'Deaktiv';
   document.getElementById('amt-mdss').textContent=deductOn.mdss?`${fmt(mdss)} ₼`:'—';
-  document.getElementById('amt-mdss').className='deduct-amount'+(deductOn.mdss&&mdss>0?'':' zero');
+  document.getElementById('amt-mdss').className='deduct-amount'+(mdss>0?'':' zero');
 
-  const itsFormula=deductOn.its?(gross<=2500?`${fmt0(gross)} × 2% = ${fmt(its)} ₼`:`2500 × 2% + ${fmt0(gross-2500)} × 0.5% = ${fmt(its)} ₼`):'Deaktiv';
-  document.getElementById('formula-its').textContent=itsFormula;
+  document.getElementById('formula-its').textContent=deductOn.its
+    ? (gross<=8000 ? `${fmt0(gross)} × 2% = ${fmt(its)} ₼` : `160 + (${fmt0(gross)}-8000) × 0.5% = ${fmt(its)} ₼`)
+    : 'Deaktiv';
   document.getElementById('amt-its').textContent=deductOn.its?`${fmt(its)} ₼`:'—';
-  document.getElementById('amt-its').className='deduct-amount'+(deductOn.its&&its>0?'':' zero');
+  document.getElementById('amt-its').className='deduct-amount'+(its>0?'':' zero');
 
   document.getElementById('formula-issiz').textContent=deductOn.issiz?`${fmt0(gross)} × 0.5% = ${fmt(issiz)} ₼`:'Deaktiv';
   document.getElementById('amt-issiz').textContent=deductOn.issiz?`${fmt(issiz)} ₼`:'—';
-  document.getElementById('amt-issiz').className='deduct-amount'+(deductOn.issiz&&issiz>0?'':' zero');
+  document.getElementById('amt-issiz').className='deduct-amount'+(issiz>0?'':' zero');
+
+  // İŞƏGÖTÜRƏN kartları
+  document.getElementById('formula-mdss-e').textContent=deductOn.mdss_e?`${fmt0(gross)} × 22% = ${fmt(mdss_e)} ₼`:'Deaktiv';
+  document.getElementById('amt-mdss-e').textContent=deductOn.mdss_e?`${fmt(mdss_e)} ₼`:'—';
+
+  document.getElementById('formula-its-e').textContent=deductOn.its_e
+    ? (gross<=8000 ? `${fmt0(gross)} × 2% = ${fmt(its_e)} ₼` : `160 + (${fmt0(gross)}-8000) × 0.5% = ${fmt(its_e)} ₼`)
+    : 'Deaktiv';
+  document.getElementById('amt-its-e').textContent=deductOn.its_e?`${fmt(its_e)} ₼`:'—';
+
+  document.getElementById('formula-issiz-e').textContent=deductOn.issiz_e?`${fmt0(gross)} × 0.5% = ${fmt(issiz_e)} ₼`:'Deaktiv';
+  document.getElementById('amt-issiz-e').textContent=deductOn.issiz_e?`${fmt(issiz_e)} ₼`:'—';
 
   // Breakdown
   document.getElementById('b-baza').textContent=`${fmt0(baza)} ₼`;
@@ -861,17 +982,31 @@ function calculate(){
   if(ixt>0){document.getElementById('b-ixt').textContent=`+ ${fmt0(ixt)} ₼`;ir.style.display='flex';}else ir.style.display='none';
   document.getElementById('b-gross-total').textContent=`${fmt0(gross)} ₼`;
 
-  const show=(id,val,show_)=>{document.getElementById(id).style.display=show_?'flex':'none';};
-  show('b-gv-row',0,deductOn.gv&&gv>0);document.getElementById('b-gv').textContent=deductOn.gv&&gv>0?`− ${fmt(gv)} ₼`:'';
+  const showRow=(id,val,show_)=>{document.getElementById(id).style.display=show_?'flex':'none';};
+  showRow('b-gv-row',0,deductOn.gv&&gv>0);
+  document.getElementById('b-gv').textContent=deductOn.gv&&gv>0?`− ${fmt(gv)} ₼`:'';
   document.getElementById('b-gv-lbl').textContent=`Gəlir vergisi (güzəşt: ${fmt0(guzest)} ₼)`;
-  show('b-mdss-row',0,deductOn.mdss&&mdss>0);document.getElementById('b-mdss').textContent=deductOn.mdss&&mdss>0?`− ${fmt(mdss)} ₼`:'';
-  show('b-its-row',0,deductOn.its&&its>0);document.getElementById('b-its').textContent=deductOn.its&&its>0?`− ${fmt(its)} ₼`:'';
-  show('b-issiz-row',0,deductOn.issiz&&issiz>0);document.getElementById('b-issiz').textContent=deductOn.issiz&&issiz>0?`− ${fmt(issiz)} ₼`:'';
+  showRow('b-mdss-row',0,deductOn.mdss&&mdss>0);
+  document.getElementById('b-mdss').textContent=deductOn.mdss&&mdss>0?`− ${fmt(mdss)} ₼`:'';
+  showRow('b-its-row',0,deductOn.its&&its>0);
+  document.getElementById('b-its').textContent=deductOn.its&&its>0?`− ${fmt(its)} ₼`:'';
+  showRow('b-issiz-row',0,deductOn.issiz&&issiz>0);
+  document.getElementById('b-issiz').textContent=deductOn.issiz&&issiz>0?`− ${fmt(issiz)} ₼`:'';
 
   const cr=document.getElementById('b-custom-rows');
   cr.innerHTML=customAmounts.filter(c=>c.amt>0).map(c=>`<div class="brow sub-warn"><span class="brow-label">${c.name} (${c.rate}%)</span><span class="brow-val">− ${fmt(c.amt)} ₼</span></div>`).join('');
 
   document.getElementById('b-net-total').textContent=`${fmt(net)} ₼`;
+
+  // İşəgötürən breakdown
+  showRow('b-mdss-e-row',0,deductOn.mdss_e&&mdss_e>0);
+  document.getElementById('b-mdss-e').textContent=deductOn.mdss_e&&mdss_e>0?`${fmt(mdss_e)} ₼`:'';
+  showRow('b-its-e-row',0,deductOn.its_e&&its_e>0);
+  document.getElementById('b-its-e').textContent=deductOn.its_e&&its_e>0?`${fmt(its_e)} ₼`:'';
+  showRow('b-issiz-e-row',0,deductOn.issiz_e&&issiz_e>0);
+  document.getElementById('b-issiz-e').textContent=deductOn.issiz_e&&issiz_e>0?`${fmt(issiz_e)} ₼`:'';
+  showRow('b-supergross-row',0,true);
+  document.getElementById('b-supergross-val').textContent=`${fmt(supergross)} ₼`;
 }
 
 // Close dropdown on outside click
