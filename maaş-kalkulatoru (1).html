@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dövlət Qulluqçusu Maaş Kalkulatoru · 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #090f1a;
+    --surface: #111827;
+    --surface2: #192133;
+    --surface3: #1f2a40;
+    --border: #243048;
+    --border2: #2e3d58;
+    --accent: #d4aa6a;
+    --accent-dim: rgba(212,170,106,0.12);
+    --accent2: #6eb5cb;
+    --accent2-dim: rgba(110,181,203,0.1);
+    --text: #eceef4;
+    --text2: #b8bdcc;
+    --muted: #6b7590;
+    --success: #56b38a;
+    --danger: #d97070;
+    --radius: 10px;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background:
+      radial-gradient(ellipse 80% 50% at 10% 10%, rgba(212,170,106,0.04) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 60% at 90% 80%, rgba(110,181,203,0.04) 0%, transparent 60%);
+    pointer-events: none; z-index: 0;
+  }
+  body::after {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.016) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.016) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none; z-index: 0;
+  }
+
+  /* TOP BAR */
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0;
+    height: 50px;
+    background: rgba(9,15,26,0.88);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 28px;
+    z-index: 100;
+  }
+  .topbar-left { display: flex; align-items: center; gap: 10px; }
+  .topbar-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 8px rgba(212,170,106,0.7);
+  }
+  .topbar-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 10.5px; letter-spacing: 1.5px;
+    color: var(--muted); text-transform: uppercase;
+  }
+  .topbar-right { display: flex; align-items: center; gap: 10px; }
+  .topbar-author-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9.5px; color: var(--muted);
+    letter-spacing: 1px; text-transform: uppercase;
+  }
+  .topbar-author-name {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px; font-weight: 500;
+    color: var(--accent); letter-spacing: 0.3px;
+    padding: 4px 14px;
+    background: var(--accent-dim);
+    border: 1px solid rgba(212,170,106,0.22);
+    border-radius: 20px;
+  }
+
+  /* CONTAINER */
+  .container {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 84px 24px 80px;
+    position: relative; z-index: 1;
+  }
+
+  /* HEADER */
+  header {
+    margin-bottom: 44px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--border);
+  }
+  .badge-row {
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 18px; flex-wrap: wrap;
+  }
+  .badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--accent-dim);
+    border: 1px solid rgba(212,170,106,0.22);
+    color: var(--accent);
+    font-family: 'DM Mono', monospace;
+    font-size: 9px; letter-spacing: 2px;
+    padding: 5px 12px; border-radius: 3px;
+    text-transform: uppercase;
+  }
+  .badge-dot {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 5px rgba(212,170,106,0.6);
+  }
+  .badge-blue {
+    background: var(--accent2-dim);
+    border-color: rgba(110,181,203,0.2);
+    color: var(--accent2);
+  }
+  h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(32px, 5.5vw, 52px);
+    font-weight: 700; line-height: 1.1;
+    color: var(--text); margin-bottom: 10px;
+  }
+  h1 em { font-style: italic; color: var(--accent); }
+  .subtitle {
+    color: var(--muted); font-size: 12px;
+    letter-spacing: 0.8px;
+    font-family: 'DM Mono', monospace;
+    line-height: 1.9;
+  }
+
+  /* STATS */
+  .stats-strip {
+    display: flex; margin-top: 26px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden; background: var(--surface);
+  }
+  .stat-item {
+    flex: 1; padding: 14px 16px;
+    border-right: 1px solid var(--border);
+    text-align: center;
+    transition: background 0.2s;
+  }
+  .stat-item:last-child { border-right: none; }
+  .stat-item:hover { background: var(--surface2); }
+  .stat-value {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 21px; font-weight: 700;
+    color: var(--accent); line-height: 1; margin-bottom: 4px;
+  }
+  .stat-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 8.5px; letter-spacing: 1px;
+    color: var(--muted); text-transform: uppercase;
+  }
+  @media (max-width: 520px) {
+    .stats-strip { flex-wrap: wrap; }
+    .stat-item { flex: 1 1 33%; border-bottom: 1px solid var(--border); }
+  }
+
+  /* CARDS */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px 26px; margin-bottom: 14px;
+    position: relative; overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(212,170,106,0.35), transparent);
+    opacity: 0; transition: opacity 0.3s;
+  }
+  .card:focus-within::before { opacity: 1; }
+  .card:focus-within { border-color: var(--border2); }
+
+  .step-label {
+    display: flex; align-items: center; gap: 12px; margin-bottom: 20px;
+  }
+  .step-num {
+    width: 24px; height: 24px; border-radius: 50%;
+    background: var(--accent-dim);
+    border: 1px solid rgba(212,170,106,0.28);
+    color: var(--accent);
+    font-family: 'DM Mono', monospace; font-size: 10px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; font-weight: 500;
+  }
+  .step-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px; letter-spacing: 2px;
+    color: var(--accent); text-transform: uppercase;
+  }
+  .step-line { flex: 1; height: 1px; background: var(--border); }
+
+  /* FORM */
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 560px) {
+    .form-grid { grid-template-columns: 1fr; }
+    .card { padding: 18px 16px; }
+    .topbar-author-label { display: none; }
+  }
+  .field { display: flex; flex-direction: column; gap: 7px; }
+  .field.full { grid-column: 1 / -1; }
+  label {
+    font-size: 9.5px; font-family: 'DM Mono', monospace;
+    color: var(--muted); letter-spacing: 1.2px; text-transform: uppercase;
+  }
+  .select-wrapper { position: relative; }
+  select {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13.5px; font-weight: 400;
+    padding: 11px 36px 11px 13px;
+    border-radius: 7px; outline: none;
+    transition: border-color 0.2s, background 0.2s;
+    width: 100%; appearance: none; -webkit-appearance: none; cursor: pointer;
+  }
+  select:focus { border-color: var(--accent); background: var(--surface3); }
+  select:hover { border-color: var(--border2); }
+  .select-wrapper::after {
+    content: '⌄';
+    position: absolute; right: 12px; top: 50%;
+    transform: translateY(-52%);
+    color: var(--accent); pointer-events: none;
+    font-size: 16px; line-height: 1;
+  }
+
+  /* PILL SELECTOR */
+  .pill-row { display: grid; grid-template-columns: repeat(7, 1fr); gap: 7px; margin-bottom: 18px; }
+  .pill-btn {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-family: 'DM Mono', monospace; font-size: 12px;
+    padding: 11px 4px; border-radius: 7px;
+    cursor: pointer; text-align: center;
+    transition: all 0.15s; font-weight: 500;
+  }
+  .pill-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
+  .pill-btn.active {
+    background: var(--accent); border-color: var(--accent);
+    color: #090f1a;
+    box-shadow: 0 0 18px rgba(212,170,106,0.28);
+  }
+
+  .staj-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 560px) { .staj-grid { grid-template-columns: 1fr; } }
+  .staj-box {
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 7px; padding: 12px 14px;
+  }
+  .staj-box-title {
+    font-family: 'DM Mono', monospace; font-size: 8.5px;
+    letter-spacing: 1.5px; color: var(--accent);
+    text-transform: uppercase; margin-bottom: 8px;
+  }
+  .staj-box-rows {
+    font-size: 11px; font-family: 'DM Mono', monospace;
+    color: var(--muted); line-height: 2;
+  }
+
+  /* BUTTON */
+  .calc-btn {
+    background: linear-gradient(135deg, #d4aa6a, #c0944a);
+    color: #090f1a; border: none;
+    font-family: 'DM Mono', monospace; font-size: 11px;
+    letter-spacing: 2.5px; text-transform: uppercase;
+    padding: 16px 32px; border-radius: 8px; cursor: pointer;
+    width: 100%; margin-top: 4px;
+    transition: all 0.2s; font-weight: 500;
+    position: relative; overflow: hidden;
+  }
+  .calc-btn::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
+    opacity: 0; transition: opacity 0.2s;
+  }
+  .calc-btn:hover::after { opacity: 1; }
+  .calc-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 26px rgba(212,170,106,0.28); }
+  .calc-btn:active { transform: translateY(0); }
+
+  /* RESULT */
+  .result-card {
+    display: none;
+    background: var(--surface);
+    border: 1px solid rgba(212,170,106,0.2);
+    border-radius: var(--radius);
+    padding: 30px 28px; margin-top: 14px;
+    position: relative; overflow: hidden;
+    animation: slideUp 0.38s cubic-bezier(0.16,1,0.3,1);
+  }
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .result-card.show { display: block; }
+  .result-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2), var(--accent));
+  }
+
+  .result-header {
+    display: flex; align-items: flex-start;
+    justify-content: space-between; flex-wrap: wrap;
+    gap: 16px; margin-bottom: 26px;
+  }
+  .result-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px; letter-spacing: 2px;
+    color: var(--muted); text-transform: uppercase; margin-bottom: 5px;
+  }
+  .result-amount {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(44px, 9vw, 68px);
+    font-weight: 700; color: var(--accent); line-height: 1;
+  }
+  .result-amount sup {
+    font-size: 26px; font-weight: 400;
+    vertical-align: super; color: var(--muted); margin-left: 4px;
+  }
+  .result-meta { text-align: right; }
+  .meta-pill-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--accent2-dim);
+    border: 1px solid rgba(110,181,203,0.2);
+    color: var(--accent2);
+    font-family: 'DM Mono', monospace; font-size: 10px;
+    padding: 6px 12px; border-radius: 5px; margin-bottom: 7px;
+  }
+  .meta-seviyye {
+    font-family: 'DM Mono', monospace; font-size: 10px;
+    color: var(--muted); line-height: 1.8;
+  }
+
+  /* BREAKDOWN */
+  .breakdown {
+    border-top: 1px solid var(--border);
+    padding-top: 20px; display: flex; flex-direction: column; gap: 7px;
+  }
+  .brow {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 9px 14px; border-radius: 7px; font-size: 13px;
+    transition: background 0.15s;
+  }
+  .brow:hover { background: rgba(255,255,255,0.02); }
+  .brow-label { color: var(--text2); }
+  .brow-val {
+    font-family: 'DM Mono', monospace; font-weight: 500;
+    color: var(--text); font-size: 13px;
+  }
+  .brow.hl {
+    background: var(--accent-dim);
+    border: 1px solid rgba(212,170,106,0.1);
+  }
+  .brow.hl .brow-label, .brow.hl .brow-val { color: var(--accent); }
+  .brow.total-row {
+    background: rgba(212,170,106,0.1);
+    border: 1px solid rgba(212,170,106,0.2); margin-top: 6px;
+  }
+  .brow.total-row .brow-label,
+  .brow.total-row .brow-val {
+    color: var(--accent); font-size: 15px; font-weight: 500;
+  }
+
+  /* INFO */
+  .info-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 18px; }
+  @media (max-width: 560px) { .info-row { grid-template-columns: 1fr; } }
+  .info-box { border-radius: var(--radius); padding: 16px 18px; }
+  .info-box.danger { background: rgba(217,112,112,0.05); border: 1px solid rgba(217,112,112,0.14); }
+  .info-box.success { background: rgba(86,179,138,0.05); border: 1px solid rgba(86,179,138,0.14); }
+  .info-box-title {
+    font-family: 'DM Mono', monospace; font-size: 9px;
+    letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 10px;
+  }
+  .info-box.danger .info-box-title { color: var(--danger); }
+  .info-box.success .info-box-title { color: var(--success); }
+  .tag-list { display: flex; flex-wrap: wrap; gap: 6px; }
+  .tag {
+    font-size: 11px; font-family: 'DM Mono', monospace;
+    padding: 4px 10px; border-radius: 4px;
+  }
+  .tag-d { background: rgba(217,112,112,0.08); border: 1px solid rgba(217,112,112,0.14); color: #b87070;
+    text-decoration: line-through; text-decoration-color: rgba(217,112,112,0.35); }
+  .tag-s { background: rgba(86,179,138,0.08); border: 1px solid rgba(86,179,138,0.14); color: #70b098; }
+
+  /* FOOTER */
+  footer {
+    text-align: center; margin-top: 52px; padding-top: 22px;
+    border-top: 1px solid var(--border);
+    display: flex; flex-direction: column; align-items: center; gap: 10px;
+  }
+  .footer-text {
+    font-family: 'DM Mono', monospace; font-size: 10px;
+    color: var(--muted); letter-spacing: 0.8px; opacity: 0.55;
+  }
+  .footer-author { display: flex; align-items: center; gap: 12px; }
+  .footer-author-line { width: 28px; height: 1px; background: var(--accent); opacity: 0.35; }
+  .footer-author-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 15px; color: var(--accent); opacity: 0.65; letter-spacing: 0.5px;
+  }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="topbar-left">
+    <div class="topbar-dot"></div>
+    <span class="topbar-title">Maaş Kalkulatoru · 2026</span>
+  </div>
+  <div class="topbar-right">
+    <span class="topbar-author-label">Tərtib etdi</span>
+    <span class="topbar-author-name">Məmməd Quliyev</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- HEADER -->
+  <header>
+    <div class="badge-row">
+      <div class="badge"><div class="badge-dot"></div>Prezident Fərmanı</div>
+      <div class="badge badge-blue">19 Mart 2026</div>
+      <div class="badge badge-blue">№ 71965</div>
+    </div>
+    <h1>Dövlət Qulluqçusu<br><em>Maaş Kalkulatoru</em></h1>
+    <p class="subtitle">
+      Yanvar 2026-dan tətbiq edilən yeni əmək haqqı sistemi əsasında<br>
+      Ödəniş səviyyəsi · Pill · İxtisas dərəcəsi
+    </p>
+    <div class="stats-strip">
+      <div class="stat-item">
+        <div class="stat-value">1.170 ₼</div>
+        <div class="stat-label">İnzibati min.</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value">760 ₼</div>
+        <div class="stat-label">Yardımçı min.</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value">35</div>
+        <div class="stat-label">İnzibati səviyyə</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value">17</div>
+        <div class="stat-label">Yardımçı səviyyə</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value">7</div>
+        <div class="stat-label">Ödəniş pilləsi</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- STEP 1 -->
+  <div class="card">
+    <div class="step-label">
+      <div class="step-num">1</div>
+      <div class="step-title">Vəzifə növü və orqan</div>
+      <div class="step-line"></div>
+    </div>
+    <div class="form-grid">
+      <div class="field">
+        <label>Vəzifə növü</label>
+        <div class="select-wrapper">
+          <select id="vazife-nov" onchange="onVazifeNovChange()">
+            <option value="">Seçin…</option>
+            <option value="inzibati">İnzibati vəzifə</option>
+            <option value="yardimci">Yardımçı vəzifə</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label>Orqan / Qurum növü</label>
+        <div class="select-wrapper">
+          <select id="orqan" onchange="onOrqanChange()">
+            <option value="">Əvvəlcə vəzifə növünü seçin</option>
+          </select>
+        </div>
+      </div>
+      <div class="field full">
+        <label>Ödəniş səviyyəsi</label>
+        <div class="select-wrapper">
+          <select id="seviyye" onchange="calculate()">
+            <option value="">Əvvəlcə orqanı seçin</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="card">
+    <div class="step-label">
+      <div class="step-num">2</div>
+      <div class="step-title">Ödəniş pilləsi (staja görə)</div>
+      <div class="step-line"></div>
+    </div>
+    <div class="pill-row">
+      <button class="pill-btn active" onclick="selectPill(1)" id="pill-1">I</button>
+      <button class="pill-btn" onclick="selectPill(2)" id="pill-2">II</button>
+      <button class="pill-btn" onclick="selectPill(3)" id="pill-3">III</button>
+      <button class="pill-btn" onclick="selectPill(4)" id="pill-4">IV</button>
+      <button class="pill-btn" onclick="selectPill(5)" id="pill-5">V</button>
+      <button class="pill-btn" onclick="selectPill(6)" id="pill-6">VI</button>
+      <button class="pill-btn" onclick="selectPill(7)" id="pill-7">VII</button>
+    </div>
+    <div class="staj-grid">
+      <div class="staj-box">
+        <div class="staj-box-title">İnzibati vəzifələr (staja görə, maks. 3 pill)</div>
+        <div class="staj-box-rows">
+          I → 1 ilə qədər (baza)<br>
+          II → 1 – 5 il staj<br>
+          III → 5 – 15 il staj<br>
+          IV → 15 ildən yuxarı
+        </div>
+      </div>
+      <div class="staj-box">
+        <div class="staj-box-title">Yardımçı vəzifələr (7 pill)</div>
+        <div class="staj-box-rows">
+          I → Baza &nbsp;&nbsp; II → 1–5 il<br>
+          III → 5–10 il &nbsp; IV → 10–15 il<br>
+          V → 15–20 il &nbsp; VI → 20–25 il<br>
+          VII → 25 ildən yuxarı
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="card">
+    <div class="step-label">
+      <div class="step-num">3</div>
+      <div class="step-title">İxtisas dərəcəsi əlavəsi</div>
+      <div class="step-line"></div>
+    </div>
+    <div class="field">
+      <label>İxtisas dərəcəsi</label>
+      <div class="select-wrapper">
+        <select id="ixtisas" onchange="calculate()">
+          <option value="0">Yoxdur — 0 ₼</option>
+          <option value="600">Həqiqi dövlət müşaviri — 600 ₼</option>
+          <option value="550">1-ci dərəcə dövlət müşaviri — 550 ₼</option>
+          <option value="500">2-ci dərəcə dövlət müşaviri — 500 ₼</option>
+          <option value="450">3-cü dərəcə dövlət müşaviri — 450 ₼</option>
+          <option value="400">Dövlət qulluğunun baş müşaviri — 400 ₼</option>
+          <option value="350">Dövlət qulluğunun müşaviri — 350 ₼</option>
+          <option value="300">Dövlət qulluğunun kiçik müşaviri — 300 ₼</option>
+          <option value="275">1-ci dərəcə dövlət qulluqçusu — 275 ₼</option>
+          <option value="250">2-ci dərəcə dövlət qulluqçusu — 250 ₼</option>
+          <option value="225">3-cü dərəcə dövlət qulluqçusu — 225 ₼</option>
+          <option value="200">Kiçik dövlət qulluqçusu — 200 ₼</option>
+          <option value="175">Dövlət qulluğunun baş referenti — 175 ₼</option>
+          <option value="150">Dövlət qulluğunun böyük referenti — 150 ₼</option>
+          <option value="125">Dövlət qulluğunun 1-ci dərəcə referenti — 125 ₼</option>
+          <option value="100">Dövlət qulluğunun 2-ci dərəcə referenti — 100 ₼</option>
+          <option value="75">Dövlət qulluğunun 3-cü dərəcə referenti — 75 ₼</option>
+          <option value="50">Dövlət qulluğunun kiçik referenti — 50 ₼</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <button class="calc-btn" onclick="calculate()">Hesabla</button>
+
+  <!-- RESULT -->
+  <div class="result-card" id="result-card">
+    <div class="result-header">
+      <div>
+        <div class="result-label">Aylıq Ümumi Əməkhaqqı</div>
+        <div class="result-amount" id="total-display">0 <sup>₼</sup></div>
+      </div>
+      <div class="result-meta">
+        <div class="meta-pill-badge" id="pill-badge-el">✦ I pill · baza</div>
+        <div class="meta-seviyye" id="meta-seviyye-el">—</div>
+      </div>
+    </div>
+    <div class="breakdown">
+      <div class="brow">
+        <span class="brow-label">Baza vəzifə maaşı (I pill)</span>
+        <span class="brow-val" id="br-baza">—</span>
+      </div>
+      <div class="brow hl" id="br-pill-row">
+        <span class="brow-label" id="br-pill-label">Pill əlavəsi</span>
+        <span class="brow-val" id="br-pill">—</span>
+      </div>
+      <div class="brow hl" id="br-ixtisas-row">
+        <span class="brow-label">İxtisas dərəcəsi əlavəsi</span>
+        <span class="brow-val" id="br-ixtisas">—</span>
+      </div>
+      <div class="brow total-row">
+        <span class="brow-label">CƏMİ (aylıq)</span>
+        <span class="brow-val" id="br-total">—</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- INFO BOXES -->
+  <div class="info-row">
+    <div class="info-box danger">
+      <div class="info-box-title">❌ Ləğv olunan təminatlar</div>
+      <div class="tag-list">
+        <span class="tag tag-d">Staja görə əlavə</span>
+        <span class="tag tag-d">Hakimiyyət səlahiyyəti əlavəsi</span>
+        <span class="tag tag-d">Misli ilə əlavə</span>
+        <span class="tag tag-d">Mükafat</span>
+      </div>
+    </div>
+    <div class="info-box success">
+      <div class="info-box-title">✅ Maaşa daxil olan elementlər</div>
+      <div class="tag-list">
+        <span class="tag tag-s">Vəzifə maaşı</span>
+        <span class="tag tag-s">İxtisas dərəcəsi əlavəsi</span>
+        <span class="tag tag-s">Əmək şəraiti əlavələri</span>
+        <span class="tag tag-s">Normadan artıq saatlara haqq</span>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-text">AR Prezidentinin 19.03.2026 tarixli Fərmanı · № 71965 · Yanvar 2026-dan tətbiq edilir</div>
+    <div class="footer-author">
+      <div class="footer-author-line"></div>
+      <div class="footer-author-text">Tərtib etdi — Məmməd Quliyev</div>
+      <div class="footer-author-line"></div>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+const inzibatiMaaslar = {
+  1:[13680,14020,14365,14705,15050,15390,15730],
+  2:[12725,13045,13360,13680,14000,14315,14635],
+  3:[11835,12135,12430,12725,13020,13315,13615],
+  4:[11010,11285,11560,11835,12115,12390,12665],
+  5:[10245,10500,10755,11010,11265,11525,11780],
+  6:[9530,9765,10005,10245,10480,10720,10960],
+  7:[8865,9085,9305,9530,9750,9970,10195],
+  8:[8245,8450,8660,8865,9070,9275,9485],
+  9:[7670,7860,8055,8245,8435,8630,8820],
+  10:[7135,7315,7490,7670,7850,8025,8205],
+  11:[6635,6805,6970,7135,7300,7465,7635],
+  12:[6175,6330,6485,6635,6790,6945,7100],
+  13:[5745,5885,6030,6175,6320,6460,6605],
+  14:[5340,5475,5610,5745,5875,6010,6145],
+  15:[4970,5095,5220,5340,5465,5590,5715],
+  16:[4625,4740,4855,4970,5085,5200,5315],
+  17:[4300,4410,4515,4625,4730,4840,4945],
+  18:[4000,4100,4200,4300,4400,4500,4600],
+  19:[3720,3815,3910,4000,4095,4185,4280],
+  20:[3460,3550,3635,3720,3810,3895,3980],
+  21:[3220,3300,3380,3460,3545,3620,3705],
+  22:[2995,3070,3145,3220,3295,3370,3445],
+  23:[2785,2855,2925,2995,3065,3135,3205],
+  24:[2590,2655,2720,2785,2850,2915,2980],
+  25:[2410,2470,2530,2595,2650,2715,2775],
+  26:[2245,2300,2355,2410,2470,2525,2580],
+  27:[2085,2140,2190,2245,2295,2350,2400],
+  28:[1940,1990,2040,2085,2135,2185,2230],
+  29:[1805,1850,1895,1940,1985,2030,2075],
+  30:[1680,1720,1765,1805,1845,1890,1930],
+  31:[1560,1600,1640,1680,1720,1755,1795],
+  32:[1455,1490,1525,1560,1600,1635,1670],
+  33:[1355,1385,1420,1455,1485,1520,1555],
+  34:[1260,1290,1320,1355,1385,1415,1445],
+  35:[1170,1200,1230,1260,1285,1315,1345],
+};
+const yardimciMaaslar = {
+  1:[1165,1195,1220,1250,1280,1310,1340],
+  2:[1135,1160,1190,1220,1245,1275,1305],
+  3:[1105,1130,1160,1185,1215,1240,1270],
+  4:[1075,1100,1130,1155,1180,1210,1235],
+  5:[1045,1070,1100,1125,1150,1175,1205],
+  6:[1020,1045,1070,1095,1120,1145,1170],
+  7:[990,1015,1040,1065,1090,1115,1140],
+  8:[965,990,1015,1040,1065,1085,1110],
+  9:[940,965,985,1010,1035,1060,1080],
+  10:[915,940,960,985,1010,1030,1055],
+  11:[890,915,935,960,980,1005,1025],
+  12:[870,890,910,935,955,975,1000],
+  13:[845,865,890,910,930,950,970],
+  14:[825,845,865,885,905,925,945],
+  15:[800,820,840,860,880,900,920],
+  16:[780,800,820,840,860,880,900],
+  17:[760,780,800,815,835,855,875],
+};
+const orqanlar = {
+  inzibati:[
+    {value:'nazirlik',        label:'Nazirlik aparatı'},
+    {value:'prezident_admin', label:'Prezident Administrasiyası'},
+    {value:'naz_kabineti',    label:'Nazirlər Kabineti Aparatı'},
+    {value:'milli_meclis',    label:'Milli Məclis Aparatı'},
+    {value:'agentlik_prez',   label:'Prezident yanında dövlət agentliyi/xidməti'},
+    {value:'agentlik_naz',    label:'Nazirlik yanında dövlət agentliyi/xidməti'},
+    {value:'yerli_ih',        label:'Yerli icra hakimiyyəti (Bakı/Gəncə/Sumq. istisna)'},
+    {value:'bsh_ixa',         label:'Bakı Şəhər İcra Hakimiyyəti Aparatı'},
+    {value:'rayon_mehkeme',   label:'Rayon/Şəhər məhkəməsi aparatı'},
+    {value:'apellyasiya',     label:'Apellyasiya məhkəməsi aparatı'},
+    {value:'ombudsman',       label:'Ombudsman Aparatı'},
+    {value:'prokurorluq',     label:'Baş Prokurorluq'},
+  ],
+  yardimci:[
+    {value:'prez_y',    label:'Prezident Administrasiyası'},
+    {value:'naz_kab_y', label:'Nazirlər Kabineti Aparatı'},
+    {value:'nazirlik_y',label:'Nazirlik aparatı'},
+    {value:'agentlik_y',label:'Dövlət agentliyi / xidməti'},
+    {value:'yerli_y',   label:'Yerli icra hakimiyyəti / Rayon orqanları'},
+    {value:'rayon_y',   label:'Rayon/Şəhər məhkəməsi'},
+    {value:'ombud_y',   label:'Ombudsman / Prokurorluq'},
+  ]
+};
+const seviyyeAraliq = {
+  nazirlik:{min:8,max:35}, prezident_admin:{min:1,max:35},
+  naz_kabineti:{min:5,max:35}, milli_meclis:{min:5,max:35},
+  agentlik_prez:{min:9,max:35}, agentlik_naz:{min:16,max:35},
+  yerli_ih:{min:16,max:35}, bsh_ixa:{min:14,max:35},
+  rayon_mehkeme:{min:30,max:35}, apellyasiya:{min:15,max:35},
+  ombudsman:{min:11,max:35}, prokurorluq:{min:11,max:35},
+  prez_y:{min:1,max:4}, naz_kab_y:{min:3,max:5},
+  nazirlik_y:{min:6,max:9}, agentlik_y:{min:10,max:13},
+  yerli_y:{min:14,max:17}, rayon_y:{min:14,max:17},
+  ombud_y:{min:6,max:13},
+};
+const inzAd={8:'Şöbə müdiri',9:'Sektor müdiri / Baş mühasib',10:'Aparıcı məsləhətçi',
+  11:'Böyük məsləhətçi',12:'Baş məsləhətçi',13:'Məsləhətçi',14:'Şöbə müdiri',
+  15:'Sektor müdiri',16:'Baş məsləhətçi',17:'Böyük məsləhətçi',18:'Aparıcı məsləhətçi',
+  19:'Məsləhətçi',20:'Sektor müdiri',21:'Baş məsləhətçi',22:'Böyük məsləhətçi',
+  23:'Aparıcı məsləhətçi',24:'Məsləhətçi',25:'Sektor müdiri',26:'Baş məsləhətçi',
+  27:'Böyük məsləhətçi',28:'Aparıcı məsləhətçi',29:'Məsləhətçi',30:'Sektor müdiri',
+  31:'Baş məsləhətçi',32:'Böyük məsləhətçi',33:'Aparıcı məsləhətçi',34:'Məsləhətçi',35:'Min. baza'};
+const yarAd={1:'Baş mütəxəssis',2:'Baş mütəxəssis',3:'Aparıcı mütəxəssis',
+  4:'Mütəxəssis',5:'Mütəxəssis',6:'Baş mütəxəssis',7:'Böyük mütəxəssis',
+  8:'Aparıcı mütəxəssis',9:'Mütəxəssis',10:'Baş mütəxəssis',
+  11:'Böyük mütəxəssis',12:'Aparıcı mütəxəssis',13:'Mütəxəssis',
+  14:'Baş mütəxəssis',15:'Böyük mütəxəssis',16:'Aparıcı mütəxəssis',17:'Mütəxəssis'};
+const pillAd=['I','II','III','IV','V','VI','VII'];
+const stajAd=['1 ilə qədər','1–5 il staj','5–15 il staj','15+ il','15–20 il','20–25 il','25+ il'];
+
+let selectedPill=1, vazifeNov='';
+
+function fmt(n){return n.toLocaleString('az-AZ');}
+
+function onVazifeNovChange(){
+  vazifeNov=document.getElementById('vazife-nov').value;
+  const os=document.getElementById('orqan');
+  os.innerHTML='<option value="">Seçin…</option>';
+  document.getElementById('seviyye').innerHTML='<option value="">Orqanı seçin</option>';
+  document.getElementById('result-card').classList.remove('show');
+  if(!vazifeNov)return;
+  orqanlar[vazifeNov].forEach(o=>{os.innerHTML+=`<option value="${o.value}">${o.label}</option>`;});
+}
+
+function onOrqanChange(){
+  const orqan=document.getElementById('orqan').value;
+  const ss=document.getElementById('seviyye');
+  ss.innerHTML='';
+  if(!orqan){ss.innerHTML='<option value="">Orqanı seçin</option>';return;}
+  const ar=seviyyeAraliq[orqan];
+  const tbl=vazifeNov==='inzibati'?inzibatiMaaslar:yardimciMaaslar;
+  const ad=vazifeNov==='inzibati'?inzAd:yarAd;
+  for(let s=ar.min;s<=ar.max;s++){
+    if(!tbl[s])continue;
+    const name=ad[s]?` — ${ad[s]}`:'';
+    ss.innerHTML+=`<option value="${s}">${s}. səviyyə${name} (baza: ${fmt(tbl[s][0])} ₼)</option>`;
+  }
+  calculate();
+}
+
+function selectPill(n){
+  selectedPill=n;
+  document.querySelectorAll('.pill-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('pill-'+n).classList.add('active');
+  calculate();
+}
+
+function calculate(){
+  const sev=parseInt(document.getElementById('seviyye').value);
+  const ixt=parseInt(document.getElementById('ixtisas').value)||0;
+  if(!sev||!vazifeNov)return;
+  const tbl=vazifeNov==='inzibati'?inzibatiMaaslar:yardimciMaaslar;
+  const ad=vazifeNov==='inzibati'?inzAd:yarAd;
+  if(!tbl[sev])return;
+  const baza=tbl[sev][0];
+  const pillMaas=tbl[sev][selectedPill-1];
+  const pillElave=pillMaas-baza;
+  const total=pillMaas+ixt;
+
+  document.getElementById('result-card').classList.add('show');
+  document.getElementById('total-display').innerHTML=`${fmt(total)} <sup>₼</sup>`;
+  document.getElementById('br-baza').textContent=`${fmt(baza)} ₼`;
+
+  const pr=document.getElementById('br-pill-row');
+  if(pillElave>0){
+    document.getElementById('br-pill-label').textContent=`${pillAd[selectedPill-1]} pill əlavəsi`;
+    document.getElementById('br-pill').textContent=`+ ${fmt(pillElave)} ₼`;
+    pr.style.display='flex';
+  } else { pr.style.display='none'; }
+
+  const ir=document.getElementById('br-ixtisas-row');
+  if(ixt>0){
+    document.getElementById('br-ixtisas').textContent=`+ ${fmt(ixt)} ₼`;
+    ir.style.display='flex';
+  } else { ir.style.display='none'; }
+
+  document.getElementById('br-total').textContent=`${fmt(total)} ₼`;
+  document.getElementById('pill-badge-el').textContent=`✦ ${pillAd[selectedPill-1]} pill · ${stajAd[selectedPill-1]} · ${fmt(pillMaas)} ₼`;
+  const name=ad[sev]||'';
+  document.getElementById('meta-seviyye-el').innerHTML=`${sev}. ödəniş səviyyəsi${name?'<br>'+name:''}`;
+}
+</script>
+</body>
+</html>
